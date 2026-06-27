@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Graphon — Runtime Dependency Intelligence for Kubernetes</title>
+    <meta name="description" content="Graphon uses eBPF to build a live dependency graph of every service in your Kubernetes cluster. Detect drift, analyze blast radius, and own your infrastructure." />
+    <meta property="og:title" content="Graphon — Runtime Dependency Intelligence" />
+    <meta property="og:description" content="eBPF-powered live dependency graphs for Kubernetes. Open source and self-hosted." />
+    <meta property="og:type" content="website" />
+    <!-- Theme flash prevention: apply saved preference before React hydrates -->
+    <script>
+      (function(){
+        var t = localStorage.getItem('graphon-theme') || 'dark';
+        if (t === 'system') t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
