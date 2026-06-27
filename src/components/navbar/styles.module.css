@@ -1,0 +1,85 @@
+.header {
+  @apply sticky top-0 z-50 w-full transition-all duration-200;
+}
+
+.headerScrolled {
+  @apply glass-panel bg-surface-container-low/80 border-b border-outline-variant/50;
+}
+
+.headerTop {
+  @apply bg-transparent border-b border-transparent;
+}
+
+.nav {
+  @apply mx-auto max-w-screen-xl px-6 md:px-10 h-14 flex items-center justify-between gap-6;
+}
+
+.logoLink {
+  @apply flex items-center gap-2 shrink-0;
+}
+
+.logoText {
+  @apply font-display font-bold text-on-surface text-[15px] tracking-tight;
+}
+
+.desktopLinks {
+  @apply hidden md:flex items-center gap-8;
+}
+
+.navLink {
+  @apply text-body-sm font-medium transition-colors duration-150 text-on-surface-variant hover:text-on-surface;
+}
+
+.navLinkActive {
+  @apply text-primary;
+}
+
+.rightActions {
+  @apply flex items-center gap-3;
+}
+
+.themeBtn {
+  @apply flex items-center gap-1.5 text-on-surface-variant hover:text-on-surface
+         transition-colors px-2 py-1 rounded-lg hover:bg-surface-container-high;
+}
+
+.themeBtnIcon {
+  @apply text-[18px];
+}
+
+.themeBtnLabel {
+  @apply hidden sm:inline text-label-caps uppercase;
+}
+
+.ctaBtn {
+  @apply hidden sm:flex items-center gap-1.5 bg-primary text-on-primary
+         font-medium text-body-sm px-3 py-1.5 rounded-full hover:opacity-90 transition-opacity;
+}
+
+.ctaBtnIcon {
+  @apply text-[16px];
+}
+
+.hamburger {
+  @apply md:hidden text-on-surface-variant hover:text-on-surface transition-colors;
+}
+
+.mobileMenu {
+  @apply md:hidden glass-panel border-b border-outline-variant/50 px-6 pb-4 pt-2 flex flex-col gap-4;
+}
+
+.mobileNavLink {
+  @apply text-body-md font-medium py-1 text-on-surface-variant;
+}
+
+.mobileNavLinkActive {
+  @apply text-primary;
+}
+
+.mobileGhLink {
+  @apply flex items-center gap-1.5 text-primary text-body-sm font-medium;
+}
+
+.mobileGhLinkIcon {
+  @apply text-[16px];
+}

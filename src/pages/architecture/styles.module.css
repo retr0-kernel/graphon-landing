@@ -1,0 +1,173 @@
+.page {
+  @apply py-16 px-6;
+}
+
+.inner {
+  @apply mx-auto max-w-screen-xl space-y-16;
+}
+
+/* ── Header ─────────────────────────────────────────────────────── */
+.header {
+  @apply max-w-2xl space-y-4;
+}
+
+.eyebrow {
+  @apply text-label-caps uppercase text-on-surface-variant cursor-default;
+}
+
+.title {
+  @apply font-display font-bold text-display-lg text-on-surface cursor-default;
+}
+
+.subtitle {
+  @apply text-body-lg text-on-surface-variant cursor-default;
+}
+
+/* ── Architecture Diagram ────────────────────────────────────────── */
+.diagram {
+  @apply rounded-xl p-8 overflow-x-auto;
+}
+
+.diagramTitle {
+  @apply font-display font-semibold text-headline-md text-on-surface mb-8 cursor-default;
+}
+
+.diagramSvg {
+  @apply w-full max-w-4xl mx-auto;
+}
+
+/* ── Timeline ────────────────────────────────────────────────────── */
+.timelineSection {
+  @apply space-y-6;
+}
+
+.sectionTitle {
+  @apply font-display font-bold text-headline-lg text-on-surface cursor-default;
+}
+
+.timelineGrid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4;
+}
+
+.timelineCard {
+  @apply bg-surface-container p-5 space-y-2;
+}
+
+.timelineTime {
+  @apply font-mono text-primary text-body-sm cursor-default;
+}
+
+.timelineLabel {
+  @apply text-body-sm text-on-surface-variant cursor-default;
+}
+
+/* ── eBPF Section ────────────────────────────────────────────────── */
+.ebpfSection {
+  @apply grid grid-cols-1 lg:grid-cols-2 gap-10 items-start;
+}
+
+.ebpfCopy {
+  @apply space-y-5;
+}
+
+.ebpfBody {
+  @apply text-body-md text-on-surface-variant cursor-default;
+}
+
+.inlineCode {
+  @apply font-mono text-primary text-body-sm bg-surface-container px-1.5 py-0.5 rounded;
+}
+
+/* ── Components ──────────────────────────────────────────────────── */
+.componentsSection {
+  @apply space-y-6;
+}
+
+.componentsGrid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4;
+}
+
+.componentCard {
+  @apply bg-surface-container p-6 space-y-3;
+}
+
+.componentTitle {
+  @apply font-mono font-medium text-body-md text-on-surface cursor-default;
+}
+
+.componentDesc {
+  @apply text-body-sm text-on-surface-variant cursor-default;
+}
+
+/* ── Schema ──────────────────────────────────────────────────────── */
+.schemaSection {
+  @apply rounded-xl p-8 space-y-6;
+}
+
+.schemaGrid {
+  @apply grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6;
+}
+
+.schemaTable {
+  @apply space-y-2;
+}
+
+.schemaTableName {
+  @apply font-mono text-primary text-body-sm cursor-default;
+}
+
+.schemaCol {
+  @apply font-mono text-label-caps text-on-surface-variant cursor-default;
+}
+
+/* ── Scroll Reveal (same utilities as home) ──────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.revealLeft {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition:
+    opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.revealRight {
+  opacity: 0;
+  transform: translateX(40px);
+  transition:
+    opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.revealScale {
+  opacity: 0;
+  transform: scale(0.93) translateY(20px);
+  transition:
+    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.inView {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .revealLeft, .revealRight, .revealScale {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}

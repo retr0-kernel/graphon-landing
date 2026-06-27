@@ -1,0 +1,324 @@
+/* ── Hero ───────────────────────────────────────────────────────────── */
+.hero {
+  @apply relative flex flex-col items-center justify-center min-h-[90vh] overflow-hidden px-6;
+}
+
+.heroOverlay {
+  @apply absolute inset-0 from-transparent via-background/60 to-background pointer-events-none;
+}
+
+.heroContent {
+  @apply relative z-10 max-w-3xl mx-auto text-center space-y-6;
+}
+
+/* Hero entrance — staggered via animation-delay */
+.heroBadge {
+  @apply inline-flex items-center gap-2 bg-surface-container/70 backdrop-blur
+         border border-outline-variant/50 text-label-caps uppercase
+         px-3 py-1.5 rounded-full text-primary cursor-default;
+  animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+.heroBadgeDot {
+  @apply w-1.5 h-1.5 rounded-full bg-primary inline-block;
+}
+
+.heroTitle {
+  @apply font-display font-bold text-display-lg text-on-surface leading-tight cursor-default;
+  animation: fadeUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+}
+
+.heroSubtitle {
+  @apply text-body-lg text-on-surface-variant max-w-xl mx-auto cursor-default;
+  animation: fadeUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s both;
+}
+
+.heroCtas {
+  @apply flex flex-wrap justify-center gap-3;
+  animation: fadeUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
+}
+
+.primaryBtn {
+  @apply flex items-center gap-2 bg-primary text-on-primary font-medium
+         text-body-md px-5 py-2.5 rounded-full cursor-pointer
+         hover:opacity-90 hover:scale-[1.03] active:scale-[0.98]
+         transition-all duration-150;
+}
+
+.ghostBtn {
+  @apply flex items-center gap-2 border border-outline-variant/70 text-on-surface
+         font-medium text-body-md px-5 py-2.5 rounded-full cursor-pointer
+         hover:bg-surface-container-high hover:border-outline-variant
+         hover:scale-[1.03] active:scale-[0.98]
+         transition-all duration-150;
+}
+
+.scrollHint {
+  @apply absolute bottom-8 left-1/2 -translate-x-1/2 text-on-surface-variant/40 cursor-default;
+  animation: fadeIn 1s ease 1.1s both;
+}
+
+/* ── Problem Statement ──────────────────────────────────────────────── */
+.problem {
+  @apply py-20 px-6;
+}
+
+.problemInner {
+  @apply mx-auto max-w-screen-xl;
+}
+
+.problemGrid {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-5;
+}
+
+.problemCard {
+  @apply bg-surface-container-low p-8 rounded-xl border border-outline-variant/30
+         transition-colors duration-200 hover:bg-surface-container hover:border-outline-variant/60;
+}
+
+.problemIcon {
+  @apply text-[28px] text-error/70 mb-4 block cursor-default;
+}
+
+.problemQ {
+  @apply font-mono text-body-sm text-on-surface mb-2 cursor-default;
+}
+
+.problemA {
+  @apply text-body-sm text-on-surface-variant cursor-default;
+}
+
+.problemFooter {
+  @apply text-center text-body-lg text-on-surface-variant mt-8 cursor-default;
+}
+
+/* ── Quick Install ──────────────────────────────────────────────────── */
+.install {
+  @apply py-16 px-6 bg-surface-container-lowest/50;
+}
+
+.installInner {
+  @apply mx-auto max-w-screen-xl;
+}
+
+.installLayout {
+  @apply grid grid-cols-1 lg:grid-cols-2 gap-12 items-center;
+}
+
+.installCopy {
+  @apply space-y-5;
+}
+
+.installEyebrow {
+  @apply text-label-caps uppercase text-primary cursor-default;
+}
+
+.installTitle {
+  @apply font-display font-bold text-headline-lg text-on-surface cursor-default;
+}
+
+.installBody {
+  @apply text-body-lg text-on-surface-variant cursor-default;
+}
+
+.installLink {
+  @apply inline-flex items-center gap-1.5 text-primary font-medium text-body-md cursor-pointer leading-none;
+}
+
+.installLink span:first-child {
+  @apply hover:underline;
+}
+
+.installLink span:last-child {
+  @apply shrink-0 leading-none transition-transform duration-150;
+}
+
+.installLink:hover span:last-child {
+  @apply translate-x-1;
+}
+
+/* ── Feature Highlights ─────────────────────────────────────────────── */
+.features {
+  @apply py-20 px-6;
+}
+
+.featuresInner {
+  @apply mx-auto max-w-screen-xl space-y-12;
+}
+
+.sectionHeader {
+  @apply text-center space-y-3;
+}
+
+.sectionEyebrow {
+  @apply text-label-caps uppercase text-on-surface-variant cursor-default;
+}
+
+.sectionTitle {
+  @apply font-display font-bold text-headline-lg text-on-surface cursor-default;
+}
+
+.featuresGrid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4;
+}
+
+.featureCard {
+  @apply bg-surface-container p-6 space-y-3;
+}
+
+.featureTitle {
+  @apply font-display font-semibold text-headline-md text-on-surface cursor-default;
+}
+
+.featureDesc {
+  @apply text-body-sm text-on-surface-variant cursor-default;
+}
+
+.featuresFooter {
+  @apply text-center;
+}
+
+.outlineBtn {
+  @apply inline-flex items-center gap-2 border border-outline-variant/60 text-on-surface
+         font-medium px-5 py-2.5 rounded-full cursor-pointer
+         hover:bg-surface-container-high hover:border-outline-variant
+         hover:scale-[1.02] active:scale-[0.98]
+         transition-all duration-150;
+}
+
+/* ── Deployment Modes ───────────────────────────────────────────────── */
+.modes {
+  @apply py-20 px-6 bg-surface-container-lowest/50;
+}
+
+.modesInner {
+  @apply mx-auto max-w-screen-xl space-y-12;
+}
+
+.modesGrid {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-6;
+}
+
+.modeCard {
+  @apply bg-surface-container p-7 space-y-4 relative;
+}
+
+.modeCardHighlight {
+  @apply bg-primary/5 border-primary/40 p-7 space-y-4 relative;
+}
+
+.modePopularPill {
+  @apply absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-on-primary
+         text-label-caps px-3 py-0.5 rounded-full cursor-default;
+}
+
+.modeBadge {
+  @apply text-label-caps uppercase text-on-surface-variant cursor-default;
+}
+
+.modeTitle {
+  @apply font-display font-bold text-headline-md text-on-surface cursor-default;
+}
+
+.modeDesc {
+  @apply text-body-sm text-on-surface-variant cursor-default;
+}
+
+.modeCta {
+  @apply inline-flex items-center gap-1.5 font-medium text-body-sm
+         text-on-surface-variant hover:underline cursor-pointer;
+}
+
+.modeCta span, .modeCtaHighlight span {
+  @apply transition-transform duration-150;
+}
+
+.modeCta:hover span, .modeCtaHighlight:hover span {
+  @apply translate-x-0.5;
+}
+
+.modeCtaHighlight {
+  @apply inline-flex items-center gap-1.5 font-medium text-body-sm
+         text-primary hover:underline cursor-pointer;
+}
+
+/* ── CTA Banner ─────────────────────────────────────────────────────── */
+.cta {
+  @apply py-20 px-6;
+}
+
+.ctaInner {
+  @apply mx-auto max-w-2xl text-center space-y-6;
+}
+
+.ctaTitle {
+  @apply font-display font-bold text-headline-lg text-on-surface cursor-default;
+}
+
+.ctaBody {
+  @apply text-body-lg text-on-surface-variant cursor-default;
+}
+
+.ctaBtn {
+  @apply inline-flex items-center gap-2 bg-primary text-on-primary font-medium
+         text-body-md px-6 py-3 rounded-full cursor-pointer
+         hover:opacity-90 hover:scale-[1.04] active:scale-[0.97]
+         transition-all duration-150;
+}
+
+/* ── Scroll Reveal Utilities ────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.revealLeft {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition:
+    opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.revealRight {
+  opacity: 0;
+  transform: translateX(40px);
+  transition:
+    opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.revealScale {
+  opacity: 0;
+  transform: scale(0.93) translateY(20px);
+  transition:
+    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.inView {
+  opacity: 1;
+  transform: none;
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .revealLeft, .revealRight, .revealScale {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+  .heroBadge, .heroTitle, .heroSubtitle, .heroCtas, .scrollHint {
+    animation: none;
+    opacity: 1;
+  }
+}

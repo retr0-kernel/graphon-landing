@@ -1,10 +1,10 @@
 import { Routes, Route } from 'react-router-dom';
-import Nav from './components/Nav';
-import Footer from './components/Footer';
-import Home from './pages/Home';
-import Features from './pages/Features';
-import Architecture from './pages/Architecture';
-import Pricing from './pages/Pricing';
+import Nav from './components/navbar';
+import Footer from './components/footer';
+import Home from './pages/home';
+import Features from './pages/features';
+import Architecture from './pages/architecture';
+import Pricing from './pages/pricing';
 
 export default function App() {
   return (

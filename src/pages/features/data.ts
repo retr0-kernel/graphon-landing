@@ -1,4 +1,38 @@
-const FEATURES = [
+export interface Feature {
+  icon: string;
+  badge: string;
+  title: string;
+  color: string;
+  bg: string;
+  border: string;
+  description: string;
+  detail: readonly string[];
+}
+
+export const BADGE_STYLE: Record<string, string> = {
+  Core:       'bg-tertiary/10 text-tertiary',
+  Enterprise: 'bg-secondary/10 text-secondary',
+};
+
+export const FREE_FEATURES: readonly string[] = [
+  'Live dependency graph',
+  'Drift detection & snapshots (manual)',
+  'Safe delete analysis',
+  'Ownership discovery',
+  'Search & export',
+  'REST API',
+] as const;
+
+export const ENTERPRISE_FEATURES: readonly string[] = [
+  'Everything in Free',
+  'RBAC (Viewer / Developer / Admin)',
+  'OIDC / SSO with group mapping',
+  'GitHub & GitLab PR impact comments',
+  'Scheduled graph snapshots',
+  'Multi-cluster registry',
+] as const;
+
+export const FEATURES: readonly Feature[] = [
   {
     icon: 'account_tree',
     badge: 'Core',
@@ -127,82 +161,4 @@ const FEATURES = [
       'Enterprise license supports unlimited clusters',
     ],
   },
-];
-
-const BADGE_STYLE: Record<string, string> = {
-  Core:       'bg-tertiary/10 text-tertiary',
-  Enterprise: 'bg-secondary/10 text-secondary',
-};
-
-export default function Features() {
-  return (
-    <div className="py-16 px-6">
-      <div className="mx-auto max-w-screen-xl space-y-14">
-        {/* Header */}
-        <div className="max-w-2xl space-y-4">
-          <p className="text-label-caps uppercase text-on-surface-variant">Capabilities</p>
-          <h1 className="font-display font-bold text-display-lg text-on-surface">
-            Everything Graphon can do
-          </h1>
-          <p className="text-body-lg text-on-surface-variant">
-            Core features are free forever in the self-hosted tier.
-            Enterprise features unlock with a license key.
-          </p>
-        </div>
-
-        {/* Bento grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {FEATURES.map(({ icon, badge, title, color, bg, border, description, detail }) => (
-            <div
-              key={title}
-              className={`glow-card ${bg} border ${border} p-7 space-y-4 flex flex-col`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <span className={`material-symbols-outlined text-[36px] ${color}`}>{icon}</span>
-                <span className={`text-label-caps uppercase px-2 py-0.5 rounded-full ${BADGE_STYLE[badge]}`}>
-                  {badge}
-                </span>
-              </div>
-              <h2 className="font-display font-bold text-headline-md text-on-surface">{title}</h2>
-              <p className="text-body-sm text-on-surface-variant flex-1">{description}</p>
-              <ul className="space-y-1.5">
-                {detail.map(d => (
-                  <li key={d} className="flex items-start gap-2 text-body-sm text-on-surface-variant">
-                    <span className="material-symbols-outlined text-[16px] text-tertiary mt-0.5 shrink-0">check_circle</span>
-                    {d}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        {/* Comparison note */}
-        <div className="glass-panel rounded-xl p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div>
-            <p className="font-display font-semibold text-headline-md text-tertiary mb-4">Free — Self-Hosted</p>
-            <ul className="space-y-2">
-              {['Live dependency graph', 'Drift detection & snapshots (manual)', 'Safe delete analysis', 'Ownership discovery', 'Search & export', 'REST API'].map(f => (
-                <li key={f} className="flex items-center gap-2 text-body-sm text-on-surface-variant">
-                  <span className="material-symbols-outlined text-[16px] text-tertiary">check</span>
-                  {f}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <p className="font-display font-semibold text-headline-md text-secondary mb-4">Enterprise</p>
-            <ul className="space-y-2">
-              {['Everything in Free', 'RBAC (Viewer / Developer / Admin)', 'OIDC / SSO with group mapping', 'GitHub & GitLab PR impact comments', 'Scheduled graph snapshots', 'Multi-cluster registry'].map(f => (
-                <li key={f} className="flex items-center gap-2 text-body-sm text-on-surface-variant">
-                  <span className="material-symbols-outlined text-[16px] text-secondary">check</span>
-                  {f}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+] as const;

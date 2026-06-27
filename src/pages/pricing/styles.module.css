@@ -1,0 +1,303 @@
+.page {
+  @apply py-16 px-6;
+}
+
+.inner {
+  @apply mx-auto max-w-screen-xl space-y-20;
+}
+
+/* ── Header ─────────────────────────────────────────────────────── */
+.header {
+  @apply text-center space-y-4 max-w-2xl mx-auto;
+}
+
+.eyebrow {
+  @apply text-label-caps uppercase text-on-surface-variant cursor-default;
+}
+
+.title {
+  @apply font-display font-bold text-display-lg text-on-surface cursor-default;
+}
+
+.subtitle {
+  @apply text-body-lg text-on-surface-variant cursor-default;
+}
+
+/* ── Pricing Cards ───────────────────────────────────────────────── */
+.cardsGrid {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch;
+}
+
+.card {
+  @apply bg-surface-container p-8 flex flex-col gap-6;
+}
+
+.cardHighlight {
+  @apply relative bg-primary/5 border-primary/40 p-8 flex flex-col gap-6 overflow-visible;
+}
+
+.cardDimmed {
+  @apply bg-surface-container p-8 flex flex-col gap-6 opacity-70;
+}
+
+.popularPill {
+  @apply absolute -top-5 left-1/2 -translate-x-1/2
+         flex items-center gap-2 whitespace-nowrap cursor-default
+         text-label-caps uppercase font-semibold tracking-[0.18em];
+  isolation: isolate;
+  padding: 0.55rem 0.75rem 0.55rem 0.85rem;
+  color: rgb(var(--c-on-surface));
+  background:
+    linear-gradient(rgb(var(--c-sc-low) / 0.9), rgb(var(--c-sc-low) / 0.9)) padding-box,
+    linear-gradient(
+      120deg,
+      rgb(var(--c-primary) / 0.95),
+      rgb(var(--c-secondary) / 0.9) 48%,
+      rgb(var(--c-tertiary) / 0.95)
+    ) border-box;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  box-shadow:
+    0 14px 32px rgba(0, 0, 0, 0.22),
+    0 0 0 1px rgb(var(--c-primary) / 0.08),
+    0 0 22px rgb(var(--c-primary) / 0.2),
+    0 0 42px rgb(var(--c-secondary) / 0.12);
+  animation: pillFloat 5s ease-in-out infinite;
+}
+
+.popularPill::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 120deg,
+    rgb(var(--c-primary) / 0.08),
+    rgb(var(--c-primary) / 0.62),
+    rgb(var(--c-secondary) / 0.55),
+    rgb(var(--c-tertiary) / 0.5),
+    rgb(var(--c-primary) / 0.08)
+  );
+  filter: blur(9px);
+  opacity: 0.7;
+  animation: pillAura 6s linear infinite;
+}
+
+.popularPill::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.16) 18%,
+    transparent 34%
+  );
+  background-size: 240% 100%;
+  pointer-events: none;
+  animation: pillShine 5s ease-in-out infinite;
+}
+
+.popularPulse {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: rgb(var(--c-tertiary));
+  box-shadow:
+    0 0 0 4px rgb(var(--c-tertiary) / 0.11),
+    0 0 14px rgb(var(--c-tertiary) / 0.85);
+}
+
+.popularIcon {
+  @apply text-[15px];
+  color: rgb(var(--c-primary));
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+}
+
+.tierLabel {
+  @apply text-label-caps uppercase cursor-default;
+}
+
+.priceRow {
+  @apply flex items-end gap-1 mt-2;
+}
+
+.price {
+  @apply font-display font-bold text-display-lg text-on-surface cursor-default;
+}
+
+.priceSub {
+  @apply text-body-sm text-on-surface-variant mb-2 cursor-default;
+}
+
+.cardNote {
+  @apply text-body-sm text-on-surface-variant mt-1 cursor-default;
+}
+
+.primaryBtn {
+  @apply flex items-center justify-center gap-2 bg-primary text-on-primary
+         font-medium text-body-md px-4 py-2.5 rounded-full
+         hover:opacity-90 active:scale-[0.98] transition-all duration-150 cursor-pointer w-full;
+}
+
+.outlineBtn {
+  @apply flex items-center justify-center gap-2 border border-outline-variant/60
+         text-on-surface font-medium text-body-md px-4 py-2.5 rounded-full
+         hover:bg-surface-container-high active:scale-[0.98]
+         transition-all duration-150 cursor-pointer w-full;
+}
+
+.disabledBtn {
+  @apply flex items-center justify-center gap-2 border border-outline-variant/30
+         text-on-surface-variant font-medium text-body-md px-4 py-2.5 rounded-full
+         cursor-not-allowed w-full;
+}
+
+.featureList {
+  @apply space-y-2.5 flex-1;
+}
+
+.featureItem {
+  @apply flex items-center gap-2 text-body-sm text-on-surface-variant cursor-default;
+}
+
+/* ── Compare Table ───────────────────────────────────────────────── */
+.compareSection {
+  @apply space-y-6;
+}
+
+.sectionTitle {
+  @apply font-display font-bold text-headline-lg text-on-surface cursor-default;
+}
+
+.tableWrap {
+  @apply overflow-x-auto rounded-xl border border-outline-variant/40;
+}
+
+.table {
+  @apply w-full text-left;
+}
+
+.thead {
+  @apply border-b border-outline-variant/40 bg-surface-container-high;
+}
+
+.th {
+  @apply px-5 py-3 text-label-caps uppercase text-on-surface-variant;
+}
+
+.thCenter {
+  @apply px-5 py-3 text-label-caps uppercase text-center;
+}
+
+.tdFeature {
+  @apply px-5 py-3 text-body-sm text-on-surface-variant cursor-default;
+}
+
+.tdCenter {
+  @apply px-5 py-3 text-center;
+}
+
+.cellText {
+  @apply text-body-sm text-on-surface-variant cursor-default;
+}
+
+/* ── FAQ ─────────────────────────────────────────────────────────── */
+.faqSection {
+  @apply max-w-2xl mx-auto space-y-6;
+}
+
+.faqItem {
+  @apply border-b border-outline-variant/40;
+}
+
+.faqBtn {
+  @apply w-full flex items-center justify-between py-4 text-left gap-4 cursor-pointer;
+}
+
+.faqQuestion {
+  @apply text-body-md text-on-surface font-medium cursor-default;
+}
+
+.faqIcon {
+  @apply text-on-surface-variant transition-transform duration-300;
+}
+
+.faqIconOpen {
+  @apply rotate-180;
+}
+
+.faqAnswer {
+  @apply pb-4 text-body-md text-on-surface-variant cursor-default;
+}
+
+/* ── Bottom CTA ──────────────────────────────────────────────────── */
+.bottomCta {
+  @apply rounded-xl p-10 text-center space-y-5;
+}
+
+.ctaTitle {
+  @apply font-display font-bold text-headline-lg text-on-surface cursor-default;
+}
+
+.ctaBody {
+  @apply text-body-lg text-on-surface-variant cursor-default;
+}
+
+.ctaBtns {
+  @apply flex flex-wrap justify-center gap-3;
+}
+
+/* ── Scroll Reveal ───────────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.revealScale {
+  opacity: 0;
+  transform: scale(0.93) translateY(20px);
+  transition:
+    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.inView {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .revealScale {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pillFloat {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(-2px); }
+}
+
+@keyframes pillAura {
+  to { transform: rotate(1turn); }
+}
+
+@keyframes pillShine {
+  0%   { background-position: 180% 0; opacity: 0; }
+  18%  { opacity: 1; }
+  42%  { background-position: -80% 0; opacity: 0; }
+  100% { background-position: -80% 0; opacity: 0; }
+}
