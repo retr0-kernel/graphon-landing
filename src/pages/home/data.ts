@@ -1,10 +1,11 @@
 import type { TerminalLine } from '../../components/terminal';
+import { type LucideIcon, Network, ArrowLeftRight, AlertTriangle, Users, HelpCircle } from 'lucide-react';
 import { ROUTES } from '../../config/routes';
 
 export type { TerminalLine };
 
 export interface Feature {
-  icon: string;
+  icon: LucideIcon;
   title: string;
   description: string;
   color: string;
@@ -20,7 +21,7 @@ export interface Mode {
 }
 
 export interface Problem {
-  icon: string;
+  icon: LucideIcon;
   q: string;
   a: string;
 }
@@ -44,25 +45,25 @@ export const INSTALL_LINES: readonly TerminalLine[] = [
 
 export const FEATURES: readonly Feature[] = [
   {
-    icon: 'account_tree',
+    icon: Network,
     title: 'Live Dependency Graph',
     description: 'eBPF traces every TCP/UDP connection. Your service topology is always current — no agents, no sidecars.',
     color: 'text-primary',
   },
   {
-    icon: 'compare_arrows',
+    icon: ArrowLeftRight,
     title: 'Drift Detection',
     description: 'Compare snapshots across time. Know exactly when a service started talking to a new endpoint.',
     color: 'text-secondary',
   },
   {
-    icon: 'warning',
+    icon: AlertTriangle,
     title: 'Safe Delete Analysis',
     description: 'Before removing a workload, Graphon shows you every service that depends on it.',
     color: 'text-[#ff9e64]',
   },
   {
-    icon: 'manage_accounts',
+    icon: Users,
     title: 'Ownership Discovery',
     description: 'Auto-detect team ownership from pod labels. No manual spreadsheet maintenance.',
     color: 'text-tertiary',
@@ -97,7 +98,7 @@ export const MODES: readonly Mode[] = [
 ] as const;
 
 export const PROBLEMS: readonly Problem[] = [
-  { icon: 'help', q: '"Which services call payment-svc?"',     a: 'Impossible to answer from docs alone.' },
-  { icon: 'help', q: '"Is it safe to delete this deployment?"', a: 'Unknown without tracing every dependent.' },
-  { icon: 'help', q: '"What changed since last Tuesday?"',      a: 'No baseline. No diff. No answer.' },
+  { icon: HelpCircle, q: '"Which services call payment-svc?"',     a: 'Impossible to answer from docs alone.' },
+  { icon: HelpCircle, q: '"Is it safe to delete this deployment?"', a: 'Unknown without tracing every dependent.' },
+  { icon: HelpCircle, q: '"What changed since last Tuesday?"',      a: 'No baseline. No diff. No answer.' },
 ] as const;

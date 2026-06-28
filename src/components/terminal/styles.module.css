@@ -1,9 +1,19 @@
 .win {
   @apply rounded-xl overflow-hidden border border-surface-container-highest;
+  --terminal-text: rgb(var(--c-on-surface));
+  --terminal-muted: rgb(var(--c-on-sv));
+  --terminal-comment: rgb(var(--c-on-sv) / 0.6);
+  --terminal-accent: rgb(var(--c-tertiary));
+  --terminal-caret: rgb(var(--c-primary) / 0.8);
   background: #000;
 }
 
 [data-theme="light"] .win {
+  --terminal-text: #f4f4f5;
+  --terminal-muted: #b7c0c7;
+  --terminal-comment: #7f8a94;
+  --terminal-accent: #7dffbc;
+  --terminal-caret: #8eeeff;
   background: #1c1b1f;
   @apply border-outline-variant/50;
 }
@@ -39,25 +49,27 @@
 }
 
 .lineCommand {
-  @apply text-on-surface;
+  color: var(--terminal-text);
 }
 
 .lineOutput {
-  @apply text-on-surface-variant;
+  color: var(--terminal-muted);
 }
 
 .lineSuccess {
-  @apply text-tertiary;
+  color: var(--terminal-accent);
 }
 
 .lineComment {
-  @apply text-on-surface-variant/60;
+  color: var(--terminal-comment);
 }
 
 .prompt {
-  @apply text-tertiary select-none;
+  @apply select-none;
+  color: var(--terminal-accent);
 }
 
 .caret {
-  @apply inline-block w-2 h-4 bg-primary/80 ml-0.5;
+  @apply inline-block w-2 h-4 ml-0.5;
+  background: var(--terminal-caret);
 }

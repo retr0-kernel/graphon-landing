@@ -1,5 +1,7 @@
 import { type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
+import { Compass, ArrowRight, ChevronDown, Star } from 'lucide-react';
+import { FaGithub } from 'react-icons/fa';
 import ShaderCanvas from '../../components/shader-canvas';
 import Terminal from '../../components/terminal';
 import styles from './styles.module.css';
@@ -46,7 +48,7 @@ export default function Home() {
 
           <div className={styles.heroCtas}>
             <Link to={ROUTES.features} className={styles.primaryBtn}>
-              <span className="material-symbols-outlined text-[18px]">explore</span>
+              <Compass size={18} />
               See Features
             </Link>
             <a
@@ -55,14 +57,14 @@ export default function Home() {
               rel="noopener noreferrer"
               className={styles.ghostBtn}
             >
-              <span className="material-symbols-outlined text-[18px]">code</span>
+              <FaGithub size={18} />
               View on GitHub
             </a>
           </div>
         </div>
 
         <div className={styles.scrollHint}>
-          <span className="material-symbols-outlined text-[28px] animate-bounce">keyboard_arrow_down</span>
+          <ChevronDown size={28} className="animate-bounce" />
         </div>
       </section>
 
@@ -70,13 +72,13 @@ export default function Home() {
       <section className={styles.problem}>
         <div ref={problemRef} className={styles.problemInner}>
           <div className={styles.problemGrid}>
-            {PROBLEMS.map(({ icon, q, a }, i) => (
+            {PROBLEMS.map(({ icon: Icon, q, a }, i) => (
               <div
                 key={q}
                 className={`${styles.problemCard} ${styles.revealScale} ${problemVisible ? styles.inView : ''}`}
                 style={rvDelay(problemVisible, i * 130)}
               >
-                <span className={`material-symbols-outlined ${styles.problemIcon}`}>{icon}</span>
+                <Icon className={styles.problemIcon} size={28} />
                 <p className={styles.problemQ}>{q}</p>
                 <p className={styles.problemA}>{a}</p>
               </div>
@@ -104,7 +106,7 @@ export default function Home() {
               </p>
               <Link to={ROUTES.architecture} className={styles.installLink}>
                 <span>How does it work?</span>
-                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                <ArrowRight size={18} />
               </Link>
             </div>
             <div className={`${styles.revealRight} ${installVisible ? styles.inView : ''}`}>
@@ -124,13 +126,13 @@ export default function Home() {
             <h2 className={styles.sectionTitle}>Everything you need to own your cluster</h2>
           </div>
           <div className={styles.featuresGrid}>
-            {FEATURES.map(({ icon, title, description, color }, i) => (
+            {FEATURES.map(({ icon: Icon, title, description, color }, i) => (
               <div
                 key={title}
                 className={`${styles.featureCard} glow-card ${styles.reveal} ${featuresVisible ? styles.inView : ''}`}
                 style={rvDelay(featuresVisible, 80 + i * 90)}
               >
-                <span className={`material-symbols-outlined text-[32px] ${color}`}>{icon}</span>
+                <Icon size={32} className={color} />
                 <h3 className={styles.featureTitle}>{title}</h3>
                 <p className={styles.featureDesc}>{description}</p>
               </div>
@@ -142,7 +144,7 @@ export default function Home() {
           >
             <Link to={ROUTES.features} className={styles.outlineBtn}>
               All Features
-              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+              <ArrowRight size={18} />
             </Link>
           </div>
         </div>
@@ -164,13 +166,21 @@ export default function Home() {
                 className={`${highlight ? styles.modeCardHighlight : styles.modeCard} glow-card ${styles.revealScale} ${modesVisible ? styles.inView : ''}`}
                 style={rvDelay(modesVisible, 80 + i * 130)}
               >
-                {highlight && <div className={styles.modePopularPill}>Most Popular</div>}
+                {highlight && (
+                  <div className={styles.modePopularPill}>
+                    <span className={styles.modePopularPulse} aria-hidden="true" />
+                    <span>Most Popular</span>
+                    <span className={`material-symbols-outlined ${styles.modePopularIcon}`} aria-hidden="true">
+                      bolt
+                    </span>
+                  </div>
+                )}
                 <span className={styles.modeBadge}>{badge}</span>
                 <h3 className={styles.modeTitle}>{title}</h3>
                 <p className={styles.modeDesc}>{desc}</p>
                 <Link to={ctaHref} className={highlight ? styles.modeCtaHighlight : styles.modeCta}>
                   {cta}
-                  <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                  <ArrowRight size={16} />
                 </Link>
               </div>
             ))}
@@ -205,7 +215,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className={styles.ctaBtn}
             >
-              <span className="material-symbols-outlined text-[20px]">star</span>
+              <Star size={20} />
               Star on GitHub
             </a>
           </div>

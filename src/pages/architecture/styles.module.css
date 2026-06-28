@@ -12,15 +12,29 @@
 }
 
 .eyebrow {
-  @apply text-label-caps uppercase text-on-surface-variant cursor-default;
+  @apply text-label-caps uppercase text-on-surface-variant cursor-default font-semibold tracking-[0.2em];
 }
 
 .title {
   @apply font-display font-bold text-display-lg text-on-surface cursor-default;
+  background: linear-gradient(
+    135deg,
+    rgb(var(--c-on-surface)),
+    rgb(var(--c-primary)) 52%,
+    rgb(var(--c-secondary))
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  letter-spacing: -0.055em;
+  line-height: 1.05;
+  text-wrap: balance;
 }
 
 .subtitle {
   @apply text-body-lg text-on-surface-variant cursor-default;
+  line-height: 1.75;
+  text-wrap: pretty;
 }
 
 /* ── Architecture Diagram ────────────────────────────────────────── */
@@ -30,10 +44,13 @@
 
 .diagramTitle {
   @apply font-display font-semibold text-headline-md text-on-surface mb-8 cursor-default;
+  letter-spacing: -0.035em;
+  line-height: 1.14;
 }
 
 .diagramSvg {
   @apply w-full max-w-4xl mx-auto;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.12));
 }
 
 /* ── Timeline ────────────────────────────────────────────────────── */
@@ -43,6 +60,18 @@
 
 .sectionTitle {
   @apply font-display font-bold text-headline-lg text-on-surface cursor-default;
+  background: linear-gradient(
+    135deg,
+    rgb(var(--c-on-surface)),
+    rgb(var(--c-primary)) 54%,
+    rgb(var(--c-secondary))
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  text-wrap: balance;
 }
 
 .timelineGrid {
@@ -54,11 +83,14 @@
 }
 
 .timelineTime {
-  @apply font-mono text-primary text-body-sm cursor-default;
+  @apply font-mono text-primary text-body-sm cursor-default font-medium;
+  letter-spacing: -0.02em;
 }
 
 .timelineLabel {
   @apply text-body-sm text-on-surface-variant cursor-default;
+  line-height: 1.62;
+  text-wrap: pretty;
 }
 
 /* ── eBPF Section ────────────────────────────────────────────────── */
@@ -72,10 +104,13 @@
 
 .ebpfBody {
   @apply text-body-md text-on-surface-variant cursor-default;
+  line-height: 1.75;
+  text-wrap: pretty;
 }
 
 .inlineCode {
   @apply font-mono text-primary text-body-sm bg-surface-container px-1.5 py-0.5 rounded;
+  box-shadow: inset 0 0 0 1px rgb(var(--c-primary) / 0.12);
 }
 
 /* ── Components ──────────────────────────────────────────────────── */
@@ -92,11 +127,15 @@
 }
 
 .componentTitle {
-  @apply font-mono font-medium text-body-md text-on-surface cursor-default;
+  @apply font-display font-semibold text-headline-md text-on-surface cursor-default;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
 }
 
 .componentDesc {
   @apply text-body-sm text-on-surface-variant cursor-default;
+  line-height: 1.68;
+  text-wrap: pretty;
 }
 
 /* ── Schema ──────────────────────────────────────────────────────── */
@@ -109,15 +148,202 @@
 }
 
 .schemaTable {
-  @apply space-y-2;
+  @apply space-y-2 rounded-xl p-4;
 }
 
 .schemaTableName {
-  @apply font-mono text-primary text-body-sm cursor-default;
+  @apply font-mono text-primary text-body-sm cursor-default font-medium;
+  letter-spacing: -0.02em;
 }
 
 .schemaCol {
   @apply font-mono text-label-caps text-on-surface-variant cursor-default;
+  line-height: 1.5;
+}
+
+/* ── Visual Polish ─────────────────────────────────────────────────── */
+[data-theme="light"] .subtitle,
+[data-theme="light"] .timelineLabel,
+[data-theme="light"] .ebpfBody,
+[data-theme="light"] .componentDesc,
+[data-theme="light"] .schemaCol {
+  color: rgba(43, 47, 55, 0.86);
+}
+
+[data-theme="dark"] .title,
+[data-theme="dark"] .sectionTitle {
+  text-shadow: 0 18px 54px rgb(var(--c-primary) / 0.12);
+}
+
+[data-theme="dark"] .subtitle,
+[data-theme="dark"] .timelineLabel,
+[data-theme="dark"] .ebpfBody,
+[data-theme="dark"] .componentDesc,
+[data-theme="dark"] .schemaCol {
+  color: rgb(var(--c-on-sv) / 0.94);
+}
+
+[data-theme="light"] .diagram,
+[data-theme="light"] .timelineCard,
+[data-theme="light"] .componentCard,
+[data-theme="light"] .schemaSection,
+[data-theme="light"] .schemaTable {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(246, 249, 253, 0.96)) padding-box,
+    linear-gradient(135deg, rgb(var(--c-primary) / 0.28), rgb(var(--c-secondary) / 0.18), rgb(var(--c-tertiary) / 0.22)) border-box;
+  box-shadow:
+    0 18px 44px rgba(22, 33, 48, 0.1),
+    0 2px 10px rgba(22, 33, 48, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+[data-theme="dark"] .diagram,
+[data-theme="dark"] .timelineCard,
+[data-theme="dark"] .componentCard,
+[data-theme="dark"] .schemaSection,
+[data-theme="dark"] .schemaTable {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(145deg, rgba(31, 31, 34, 0.98), rgba(18, 18, 22, 0.98)) padding-box,
+    linear-gradient(135deg, rgb(var(--c-primary) / 0.3), rgb(var(--c-secondary) / 0.2), rgb(var(--c-tertiary) / 0.22)) border-box;
+  box-shadow:
+    0 22px 48px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="light"] .timelineCard:nth-child(1),
+[data-theme="light"] .componentCard:nth-child(1) {
+  background:
+    radial-gradient(circle at 18% 0%, rgb(var(--c-primary) / 0.18), transparent 38%) padding-box,
+    linear-gradient(145deg, rgba(255, 255, 255, 0.97), rgba(235, 249, 252, 0.9)) padding-box,
+    linear-gradient(135deg, rgb(var(--c-primary) / 0.36), rgb(var(--c-secondary) / 0.22)) border-box;
+}
+
+[data-theme="light"] .timelineCard:nth-child(2),
+[data-theme="light"] .componentCard:nth-child(2),
+[data-theme="light"] .componentCard:nth-child(6) {
+  background:
+    radial-gradient(circle at 18% 0%, rgb(var(--c-secondary) / 0.16), transparent 38%) padding-box,
+    linear-gradient(145deg, rgba(255, 255, 255, 0.97), rgba(248, 239, 255, 0.9)) padding-box,
+    linear-gradient(135deg, rgb(var(--c-secondary) / 0.34), rgb(var(--c-primary) / 0.2)) border-box;
+}
+
+[data-theme="light"] .timelineCard:nth-child(3),
+[data-theme="light"] .componentCard:nth-child(3) {
+  background:
+    radial-gradient(circle at 18% 0%, rgb(var(--c-tertiary) / 0.16), transparent 38%) padding-box,
+    linear-gradient(145deg, rgba(255, 255, 255, 0.97), rgba(237, 255, 246, 0.9)) padding-box,
+    linear-gradient(135deg, rgb(var(--c-tertiary) / 0.34), rgb(var(--c-secondary) / 0.2)) border-box;
+}
+
+[data-theme="light"] .timelineCard:nth-child(4),
+[data-theme="light"] .componentCard:nth-child(4) {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 158, 100, 0.18), transparent 38%) padding-box,
+    linear-gradient(145deg, rgba(255, 255, 255, 0.97), rgba(255, 245, 238, 0.9)) padding-box,
+    linear-gradient(135deg, rgba(255, 158, 100, 0.36), rgb(var(--c-primary) / 0.2)) border-box;
+}
+
+[data-theme="light"] .componentCard:nth-child(5) {
+  background:
+    radial-gradient(circle at 18% 0%, rgb(var(--c-primary) / 0.18), transparent 38%) padding-box,
+    linear-gradient(145deg, rgba(255, 255, 255, 0.97), rgba(232, 250, 253, 0.9)) padding-box,
+    linear-gradient(135deg, rgb(var(--c-primary) / 0.38), rgb(var(--c-tertiary) / 0.22)) border-box;
+}
+
+[data-theme="dark"] .timelineCard:nth-child(1),
+[data-theme="dark"] .componentCard:nth-child(1),
+[data-theme="dark"] .componentCard:nth-child(5) {
+  background:
+    radial-gradient(circle at 18% 0%, rgb(var(--c-primary) / 0.2), transparent 40%) padding-box,
+    linear-gradient(145deg, rgba(27, 33, 36, 0.98), rgba(14, 18, 21, 0.98)) padding-box,
+    linear-gradient(135deg, rgb(var(--c-primary) / 0.42), rgb(var(--c-secondary) / 0.2)) border-box;
+}
+
+[data-theme="dark"] .timelineCard:nth-child(2),
+[data-theme="dark"] .componentCard:nth-child(2),
+[data-theme="dark"] .componentCard:nth-child(6) {
+  background:
+    radial-gradient(circle at 18% 0%, rgb(var(--c-secondary) / 0.18), transparent 40%) padding-box,
+    linear-gradient(145deg, rgba(33, 28, 40, 0.98), rgba(18, 15, 24, 0.98)) padding-box,
+    linear-gradient(135deg, rgb(var(--c-secondary) / 0.4), rgb(var(--c-primary) / 0.18)) border-box;
+}
+
+[data-theme="dark"] .timelineCard:nth-child(3),
+[data-theme="dark"] .componentCard:nth-child(3) {
+  background:
+    radial-gradient(circle at 18% 0%, rgb(var(--c-tertiary) / 0.18), transparent 40%) padding-box,
+    linear-gradient(145deg, rgba(25, 36, 31, 0.98), rgba(14, 20, 17, 0.98)) padding-box,
+    linear-gradient(135deg, rgb(var(--c-tertiary) / 0.38), rgb(var(--c-secondary) / 0.18)) border-box;
+}
+
+[data-theme="dark"] .timelineCard:nth-child(4),
+[data-theme="dark"] .componentCard:nth-child(4) {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 158, 100, 0.2), transparent 40%) padding-box,
+    linear-gradient(145deg, rgba(38, 29, 24, 0.98), rgba(20, 16, 14, 0.98)) padding-box,
+    linear-gradient(135deg, rgba(255, 158, 100, 0.42), rgb(var(--c-primary) / 0.18)) border-box;
+}
+
+[data-theme="light"] .diagram:hover,
+[data-theme="light"] .timelineCard:hover,
+[data-theme="light"] .componentCard:hover,
+[data-theme="light"] .schemaSection:hover,
+[data-theme="light"] .schemaTable:hover {
+  border-color: transparent;
+  box-shadow:
+    0 24px 58px rgba(22, 33, 48, 0.14),
+    0 8px 24px rgba(0, 104, 117, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.98);
+}
+
+[data-theme="dark"] .diagram:hover,
+[data-theme="dark"] .timelineCard:hover,
+[data-theme="dark"] .componentCard:hover,
+[data-theme="dark"] .schemaSection:hover,
+[data-theme="dark"] .schemaTable:hover {
+  border-color: transparent;
+  box-shadow:
+    0 28px 64px rgba(0, 0, 0, 0.46),
+    0 0 26px rgb(var(--c-primary) / 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="light"] .componentCard:nth-child(1) .componentTitle,
+[data-theme="light"] .componentCard:nth-child(5) .componentTitle {
+  color: rgb(var(--c-primary));
+}
+
+[data-theme="light"] .componentCard:nth-child(2) .componentTitle,
+[data-theme="light"] .componentCard:nth-child(6) .componentTitle {
+  color: rgb(var(--c-secondary));
+}
+
+[data-theme="light"] .componentCard:nth-child(3) .componentTitle {
+  color: rgb(var(--c-tertiary));
+}
+
+[data-theme="light"] .componentCard:nth-child(4) .componentTitle {
+  color: #b45309;
+}
+
+[data-theme="dark"] .componentCard:nth-child(1) .componentTitle,
+[data-theme="dark"] .componentCard:nth-child(5) .componentTitle {
+  color: rgb(var(--c-primary));
+}
+
+[data-theme="dark"] .componentCard:nth-child(2) .componentTitle,
+[data-theme="dark"] .componentCard:nth-child(6) .componentTitle {
+  color: rgb(var(--c-secondary));
+}
+
+[data-theme="dark"] .componentCard:nth-child(3) .componentTitle {
+  color: rgb(var(--c-tertiary));
+}
+
+[data-theme="dark"] .componentCard:nth-child(4) .componentTitle {
+  color: #ffb088;
 }
 
 /* ── Scroll Reveal (same utilities as home) ──────────────────────── */

@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import { type LucideIcon, Moon, Sun, Monitor, Menu, X } from 'lucide-react';
+import { FaGithub } from 'react-icons/fa';
 import { useTheme, type ThemePreference } from '../../context/ThemeContext';
 import styles from './styles.module.css';
 import GraphonLogo from '../../assets/icons/GraphonLogo';
 import { NAV_LINKS } from '../../config/routes';
 import { GITHUB_URL } from '../../config/externalLinks';
 
-const ICON_MAP: Record<ThemePreference, string> = {
-  dark: 'dark_mode',
-  light: 'light_mode',
-  system: 'contrast',
+const ThemeIcon: Record<ThemePreference, LucideIcon> = {
+  dark: Moon,
+  light: Sun,
+  system: Monitor,
 };
 
 const LABEL_MAP: Record<ThemePreference, string> = {
@@ -42,7 +44,9 @@ export default function Navbar() {
       <nav className={styles.nav}>
         {/* Logo */}
         <Link to="/" className={styles.logoLink}>
-          <GraphonLogo size={24} />
+          <span className={styles.logoMark}>
+            <GraphonLogo size={24} />
+          </span>
           <span className={styles.logoText}>Graphon</span>
         </Link>
 
@@ -59,13 +63,14 @@ export default function Navbar() {
         <div className={styles.rightActions}>
           {/* Theme toggle */}
           <button
-            onClick={cycle}
+            onClick={(e) => {
+              const r = e.currentTarget.getBoundingClientRect();
+              cycle(r.left + r.width / 2, r.top + r.height / 2);
+            }}
             title={`Theme: ${LABEL_MAP[preference]}`}
             className={styles.themeBtn}
           >
-            <span className={`material-symbols-outlined ${styles.themeBtnIcon}`}>
-              {ICON_MAP[preference]}
-            </span>
+            {(() => { const Icon = ThemeIcon[preference]; return <Icon key={preference} size={18} className={`${styles.themeBtnIcon} ${styles.themeBtnIconEnter}`} />; })()}
             <span className={styles.themeBtnLabel}>{LABEL_MAP[preference]}</span>
           </button>
 
@@ -76,7 +81,7 @@ export default function Navbar() {
             rel="noopener noreferrer"
             className={styles.ctaBtn}
           >
-            <span className={`material-symbols-outlined ${styles.ctaBtnIcon}`}>code</span>
+            <FaGithub size={16} className={styles.ctaBtnIcon} />
             GitHub
           </a>
 
@@ -87,9 +92,7 @@ export default function Navbar() {
             aria-label="Toggle menu"
             aria-expanded={menuOpen}
           >
-            <span className="material-symbols-outlined">
-              {menuOpen ? 'close' : 'menu'}
-            </span>
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </nav>
@@ -114,7 +117,7 @@ export default function Navbar() {
             rel="noopener noreferrer"
             className={styles.mobileGhLink}
           >
-            <span className={`material-symbols-outlined ${styles.mobileGhLinkIcon}`}>code</span>
+            <FaGithub size={16} className={styles.mobileGhLinkIcon} />
             View on GitHub
           </a>
         </div>
