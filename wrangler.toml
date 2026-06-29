@@ -1,0 +1,10 @@
+name = "graphon-landing"
+compatibility_date = "2025-01-01"
+
+# Serve the Vite build output as static assets.
+# Workers Static Assets handles caching, ETags, and content-type headers automatically.
+# not_found_handling = "single-page-application" rewrites any 404 back to index.html,
+# which is required for BrowserRouter. HashRouter works without it but it is safe to keep.
+[assets]
+directory = "./dist"
+not_found_handling = "single-page-application"
