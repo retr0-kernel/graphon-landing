@@ -7,6 +7,7 @@ import Home from './pages/home';
 import Features from './pages/features';
 import Architecture from './pages/architecture';
 import Pricing from './pages/pricing';
+import Docs from './pages/docs';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -37,6 +38,7 @@ export default function App() {
             <Route path="/features"     element={<Features />} />
             <Route path="/architecture" element={<Architecture />} />
             <Route path="/pricing"      element={<Pricing />} />
+            <Route path="/docs"         element={<Docs />} />
           </Routes>
         </main>
         <Footer />

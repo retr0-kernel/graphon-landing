@@ -97,5 +97,5 @@ export const CTA_LINKS = {
   openIssue:    `${GITHUB_URL}/issues/new`,
   getLicense:   `${GITHUB_URL}/issues/new`,
   deploy:       GITHUB_URL,
-  readDocs:     ROUTES.architecture,
+  readDocs:     ROUTES.docs,
 } as const;

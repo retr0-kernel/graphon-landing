@@ -1,0 +1,448 @@
+/* ── Page shell ─────────────────────────────────────────────────────── */
+.page {
+  @apply py-12 px-4 sm:px-6;
+  min-height: 100vh;
+}
+
+.layout {
+  @apply mx-auto max-w-screen-xl;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 0;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Sidebar ────────────────────────────────────────────────────────── */
+.sidebar {
+  position: sticky;
+  top: 80px;
+  height: calc(100vh - 96px);
+  overflow-y: auto;
+  padding: 0 20px 40px 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--c-outline-v) / 0.4) transparent;
+}
+
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: rgb(var(--c-outline-v) / 0.4); border-radius: 4px; }
+
+@media (max-width: 900px) {
+  .sidebar {
+    position: static;
+    height: auto;
+    overflow: visible;
+    border-bottom: 1px solid rgb(var(--c-outline-v) / 0.4);
+    padding: 0 0 16px 0;
+    margin-bottom: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+}
+
+.sidebarGroup {
+  @apply mb-6;
+}
+
+@media (max-width: 900px) {
+  .sidebarGroup { @apply mb-0; }
+}
+
+.sidebarGroupTitle {
+  @apply text-label-caps uppercase font-semibold tracking-[0.18em] mb-2 cursor-default;
+  font-size: 10px;
+  color: rgb(var(--c-on-surface) / 0.4);
+  padding-left: 8px;
+}
+
+@media (max-width: 900px) {
+  .sidebarGroupTitle { display: none; }
+}
+
+.sidebarLink {
+  display: block;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 5px 10px;
+  border-radius: 6px;
+  color: rgb(var(--c-on-surface) / 0.6);
+  text-decoration: none;
+  transition: color 0.15s, background 0.15s;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  text-align: left;
+  width: 100%;
+}
+
+.sidebarLink:hover {
+  color: rgb(var(--c-on-surface));
+  background: rgb(var(--c-sc-high) / 0.5);
+}
+
+.sidebarLinkActive {
+  color: rgb(var(--c-primary)) !important;
+  background: rgb(var(--c-primary) / 0.08) !important;
+  font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .sidebarLink {
+    width: auto;
+    padding: 4px 10px;
+    border: 1px solid rgb(var(--c-outline-v) / 0.5);
+    border-radius: 999px;
+    font-size: 12px;
+  }
+  .sidebarLinkActive {
+    border-color: rgb(var(--c-primary) / 0.5) !important;
+  }
+}
+
+/* ── Content area ───────────────────────────────────────────────────── */
+.content {
+  @apply px-8 pb-24;
+  max-width: 820px;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .content { @apply px-0; }
+}
+
+/* ── Page header ────────────────────────────────────────────────────── */
+.pageHeader {
+  @apply mb-12 pb-8;
+  border-bottom: 1px solid rgb(var(--c-outline-v) / 0.4);
+}
+
+.eyebrow {
+  @apply text-label-caps uppercase font-semibold tracking-[0.2em] mb-3 cursor-default;
+  font-size: 11px;
+  color: rgb(var(--c-primary));
+}
+
+.pageTitle {
+  @apply font-display font-bold cursor-default;
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  letter-spacing: -0.055em;
+  line-height: 1.05;
+  background: linear-gradient(
+    135deg,
+    rgb(var(--c-on-surface)),
+    rgb(var(--c-primary)) 52%,
+    rgb(var(--c-secondary))
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-wrap: balance;
+}
+
+.pageSubtitle {
+  @apply mt-3 text-body-lg cursor-default;
+  color: rgb(var(--c-on-surface) / 0.7);
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+
+/* ── Sections ───────────────────────────────────────────────────────── */
+.section {
+  @apply mb-16;
+  scroll-margin-top: 88px;
+}
+
+.sectionTitle {
+  @apply font-display font-bold cursor-default;
+  font-size: 1.5rem;
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+  color: rgb(var(--c-on-surface));
+  margin-bottom: 6px;
+  padding-top: 8px;
+  border-top: 1px solid rgb(var(--c-outline-v) / 0.3);
+  padding-bottom: 16px;
+}
+
+.subSection {
+  @apply mb-10;
+  scroll-margin-top: 88px;
+}
+
+.subSectionTitle {
+  @apply font-display font-semibold cursor-default mb-3;
+  font-size: 1.1rem;
+  letter-spacing: -0.03em;
+  line-height: 1.3;
+  color: rgb(var(--c-on-surface));
+}
+
+.prose {
+  @apply text-body-md cursor-default mb-4;
+  color: rgb(var(--c-on-surface) / 0.75);
+  line-height: 1.75;
+  text-wrap: pretty;
+}
+
+[data-theme="light"] .prose {
+  color: rgba(43, 47, 55, 0.82);
+}
+
+/* ── Code inline ────────────────────────────────────────────────────── */
+.code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.82em;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: rgb(var(--c-sc-high) / 0.6);
+  color: rgb(var(--c-primary));
+  white-space: nowrap;
+}
+
+[data-theme="light"] .code {
+  background: rgb(var(--c-sc-high) / 0.8);
+  color: rgb(var(--c-primary));
+}
+
+/* ── Callout box ────────────────────────────────────────────────────── */
+.callout {
+  @apply flex gap-3 rounded-lg p-4 mb-6;
+  border: 1px solid rgb(var(--c-primary) / 0.25);
+  background: rgb(var(--c-primary) / 0.06);
+}
+
+.calloutIcon {
+  @apply text-[18px] shrink-0 mt-0.5;
+  color: rgb(var(--c-primary));
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+}
+
+.calloutText {
+  @apply text-body-sm cursor-default;
+  color: rgb(var(--c-on-surface) / 0.8);
+  line-height: 1.65;
+}
+
+.calloutWarn {
+  border-color: rgb(var(--c-secondary) / 0.3);
+  background: rgb(var(--c-secondary) / 0.06);
+}
+
+.calloutWarnIcon {
+  color: rgb(var(--c-secondary));
+}
+
+/* ── Prerequisites list ─────────────────────────────────────────────── */
+.prereqList {
+  @apply space-y-3 mb-8;
+}
+
+.prereqItem {
+  @apply flex items-start gap-3 rounded-lg p-4;
+  border: 1px solid rgb(var(--c-outline-v) / 0.4);
+  background: rgb(var(--c-sc) / 0.5);
+}
+
+.prereqCheck {
+  @apply text-[18px] shrink-0 mt-0.5;
+  color: rgb(var(--c-tertiary));
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+}
+
+.prereqLabel {
+  @apply font-semibold text-body-sm cursor-default;
+  color: rgb(var(--c-on-surface));
+  line-height: 1.4;
+}
+
+.prereqDetail {
+  @apply text-body-sm cursor-default;
+  color: rgb(var(--c-on-surface) / 0.6);
+  line-height: 1.5;
+  font-size: 12px;
+  margin-top: 1px;
+}
+
+/* ── Data flow steps ────────────────────────────────────────────────── */
+.flowList {
+  @apply space-y-4 mb-8;
+}
+
+.flowItem {
+  @apply flex gap-4 items-start;
+}
+
+.flowStep {
+  @apply font-display font-bold shrink-0 flex items-center justify-center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 13px;
+  background: rgb(var(--c-primary) / 0.12);
+  color: rgb(var(--c-primary));
+  border: 1px solid rgb(var(--c-primary) / 0.3);
+  margin-top: 2px;
+}
+
+.flowTitle {
+  @apply font-semibold text-body-md cursor-default;
+  color: rgb(var(--c-on-surface));
+  margin-bottom: 2px;
+  line-height: 1.3;
+}
+
+.flowDesc {
+  @apply text-body-sm cursor-default;
+  color: rgb(var(--c-on-surface) / 0.65);
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+[data-theme="light"] .flowDesc { color: rgba(43, 47, 55, 0.75); }
+
+/* ── Component table ────────────────────────────────────────────────── */
+.tableWrap {
+  @apply overflow-x-auto rounded-xl mb-8;
+  border: 1px solid rgb(var(--c-outline-v) / 0.4);
+}
+
+.table {
+  @apply w-full text-left;
+  border-collapse: collapse;
+}
+
+.thead {
+  border-bottom: 1px solid rgb(var(--c-outline-v) / 0.4);
+  background: rgb(var(--c-sc-high) / 0.6);
+}
+
+.th {
+  @apply px-4 py-2.5 text-label-caps uppercase font-semibold tracking-[0.14em];
+  font-size: 10px;
+  color: rgb(var(--c-on-surface) / 0.5);
+  white-space: nowrap;
+}
+
+.td {
+  @apply px-4 py-3 text-body-sm cursor-default;
+  color: rgb(var(--c-on-surface) / 0.75);
+  line-height: 1.55;
+  border-top: 1px solid rgb(var(--c-outline-v) / 0.2);
+  vertical-align: top;
+}
+
+.tdMono {
+  @apply px-4 py-3 text-body-sm cursor-default;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: rgb(var(--c-primary));
+  border-top: 1px solid rgb(var(--c-outline-v) / 0.2);
+  white-space: nowrap;
+}
+
+.tdBadge {
+  @apply px-4 py-3;
+  border-top: 1px solid rgb(var(--c-outline-v) / 0.2);
+}
+
+[data-theme="light"] .thead { background: rgba(240, 240, 244, 0.9); }
+[data-theme="dark"] .thead  { background: rgba(31, 31, 34, 0.9); }
+
+tr:hover .td,
+tr:hover .tdMono,
+tr:hover .tdBadge {
+  background: rgb(var(--c-sc-high) / 0.3);
+}
+
+/* ── Method + route badges ──────────────────────────────────────────── */
+.methodGet    { @apply inline-flex items-center px-2 py-0.5 rounded font-mono font-bold text-[11px]; background: rgb(var(--c-tertiary) / 0.15); color: rgb(var(--c-tertiary)); }
+.methodPost   { @apply inline-flex items-center px-2 py-0.5 rounded font-mono font-bold text-[11px]; background: rgb(var(--c-primary) / 0.15); color: rgb(var(--c-primary)); }
+.methodPut    { @apply inline-flex items-center px-2 py-0.5 rounded font-mono font-bold text-[11px]; background: rgb(var(--c-secondary) / 0.15); color: rgb(var(--c-secondary)); }
+.methodPatch  { @apply inline-flex items-center px-2 py-0.5 rounded font-mono font-bold text-[11px]; background: rgb(221 184 100 / 0.15); color: #ddaa44; }
+.methodDelete { @apply inline-flex items-center px-2 py-0.5 rounded font-mono font-bold text-[11px]; background: rgb(var(--c-error) / 0.15); color: rgb(var(--c-error)); }
+
+/* ── Feature compare table ──────────────────────────────────────────── */
+.checkFree { @apply text-[16px]; color: rgb(var(--c-tertiary)); font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20; }
+.checkEnt  { @apply text-[16px]; color: rgb(var(--c-primary));  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20; }
+.crossIcon { @apply text-[16px]; color: rgb(var(--c-on-surface) / 0.2); font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20; }
+.cellText  { @apply text-body-sm cursor-default; color: rgb(var(--c-on-surface) / 0.65); font-size: 12px; }
+
+/* ── Deployment mode cards ──────────────────────────────────────────── */
+.modeCards {
+  @apply grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8;
+}
+
+.modeCard {
+  @apply p-5 rounded-xl space-y-3;
+  border: 1px solid rgb(var(--c-outline-v) / 0.4);
+  background: rgb(var(--c-sc) / 0.6);
+}
+
+.modeCardHighlight {
+  @apply p-5 rounded-xl space-y-3;
+  border: 1px solid rgb(var(--c-primary) / 0.4);
+  background: rgb(var(--c-primary) / 0.06);
+}
+
+.modeBadge {
+  @apply text-label-caps uppercase font-semibold tracking-[0.16em] cursor-default;
+  font-size: 10px;
+  color: rgb(var(--c-on-surface) / 0.4);
+}
+
+.modeTitle {
+  @apply font-display font-semibold cursor-default;
+  font-size: 1rem;
+  letter-spacing: -0.025em;
+  color: rgb(var(--c-on-surface));
+}
+
+.modeDesc {
+  @apply text-body-sm cursor-default;
+  color: rgb(var(--c-on-surface) / 0.6);
+  line-height: 1.65;
+  font-size: 12px;
+}
+
+.modeFeatures {
+  @apply space-y-1 mt-1;
+}
+
+.modeFeatureItem {
+  @apply flex items-start gap-2 text-[12px] cursor-default;
+  color: rgb(var(--c-on-surface) / 0.6);
+  line-height: 1.55;
+}
+
+/* ── RBAC roles table ───────────────────────────────────────────────── */
+.rolePill {
+  @apply inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-mono font-semibold;
+  background: rgb(var(--c-sc-high) / 0.7);
+  color: rgb(var(--c-on-surface));
+}
+
+/* ── Reveal animation ───────────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--delay, 0ms);
+}
+
+.inView {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { transition: none; opacity: 1; transform: none; }
+}
