@@ -4,7 +4,7 @@ import { type LucideIcon, Moon, Sun, Monitor, Menu, X } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 import { useTheme, type ThemePreference } from '../../context/ThemeContext';
 import styles from './styles.module.css';
-import GraphonLogo from '../../assets/icons/GraphonLogo';
+import graphonImg from '../../assets/images/graphon.png';
 import { NAV_LINKS } from '../../config/routes';
 import { GITHUB_URL } from '../../config/externalLinks';
 
@@ -44,9 +44,7 @@ export default function Navbar() {
       <nav className={styles.nav}>
         {/* Logo */}
         <Link to="/" className={styles.logoLink}>
-          <span className={styles.logoMark}>
-            <GraphonLogo size={24} />
-          </span>
+          <img src={graphonImg} alt="Graphon" width={40} height={40} className={styles.logoImg} />
           <span className={styles.logoText}>Graphon</span>
         </Link>
 

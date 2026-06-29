@@ -32,7 +32,7 @@ export default function Home() {
         <div className={styles.heroContent}>
           <div className={styles.heroBadge}>
             <span className={`${styles.heroBadgeDot} dot-pulse`} />
-            v0.3.0 — Self-Hosted &amp; Enterprise
+            Self-Hosted &amp; Enterprise
           </div>
 
           <h1 className={styles.heroTitle}>

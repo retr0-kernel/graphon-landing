@@ -40,17 +40,22 @@
 }
 
 .logoLink {
-  @apply flex items-center gap-2.5 shrink-0 rounded-full transition-transform duration-200;
+  @apply flex items-center gap-1.5 shrink-0 rounded-full transition-transform duration-200;
 }
 
 .logoLink:hover {
   transform: translateY(-1px);
 }
 
+.logoImg {
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .logoMark {
   @apply grid place-items-center shrink-0;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 3rem;
+  height: 3rem;
   border: 1px solid rgb(var(--c-outline-v) / 0.5);
   border-radius: 999px;
   background:

@@ -8,6 +8,7 @@ import Features from './pages/features';
 import Architecture from './pages/architecture';
 import Pricing from './pages/pricing';
 import Docs from './pages/docs';
+import ContactUs from './pages/contact-us/index';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -25,7 +26,7 @@ export default function App() {
   const showGlobalCanvas = pathname !== '/';
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative min-h-screen">
       {showGlobalCanvas && (
         <ShaderCanvas className="fixed inset-0 z-0 w-full h-full bg-background pointer-events-none" />
       )}
@@ -39,6 +40,7 @@ export default function App() {
             <Route path="/architecture" element={<Architecture />} />
             <Route path="/pricing"      element={<Pricing />} />
             <Route path="/docs"         element={<Docs />} />
+            <Route path="/contact-us"   element={<ContactUs />} />
           </Routes>
         </main>
         <Footer />
