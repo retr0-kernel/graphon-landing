@@ -3,7 +3,7 @@ import styles from './styles.module.css';
 import { NAV_LINKS, ROUTES } from '../../config/routes';
 import { BOTTOM_LINKS, GITHUB_URL } from '../../config/externalLinks';
 import { CONTACT_PAGE_DATA, getGmailComposeUrl } from '../../pages/contact-us/data';
-import GraphonLogo from '../../assets/icons/GraphonLogo';
+import graphonLogo from '../../assets/images/graphon.png';
 import GitHubIcon from '../../assets/icons/GitHubIcon';
 
 export default function Footer() {
@@ -17,7 +17,7 @@ export default function Footer() {
         <div className={styles.brandCard}>
           <div className={styles.brandTop}>
             <Link to="/" className={styles.logoLink}>
-              <GraphonLogo size={26} />
+              <img src={graphonLogo} alt="Graphon logo" className={styles.logoImage} />
               <span className={styles.logoText}>Graphon</span>
             </Link>
             <span className={styles.statusPill}>

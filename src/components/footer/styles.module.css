@@ -52,6 +52,10 @@
   @apply flex w-fit items-center gap-3;
 }
 
+.logoImage {
+  @apply h-9 w-9 rounded-full object-cover;
+}
+
 .logoText {
   @apply font-display text-[18px] font-bold tracking-tight text-on-surface;
 }
