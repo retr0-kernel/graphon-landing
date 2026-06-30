@@ -1,4 +1,4 @@
-import { useMemo, type CSSProperties } from 'react';
+import { useMemo, useEffect, useRef, type CSSProperties } from 'react';
 import Terminal from '../../components/terminal';
 import styles from './styles.module.css';
 import { useActiveSection } from '../../hooks/useActiveSection';
@@ -121,6 +121,31 @@ export default function Docs() {
     ]), []);
 
   const activeId = useActiveSection(allIds);
+  const sidebarRef = useRef<HTMLElement>(null);
+
+  // Auto-scroll the sidebar so the active item is always fully visible with padding
+  useEffect(() => {
+    if (!activeId || !sidebarRef.current) return;
+    const sidebar = sidebarRef.current;
+    const btn = sidebar.querySelector<HTMLElement>(`[data-sid="${activeId}"]`);
+    if (!btn) return;
+
+    const PADDING = 80; // px of breathing room above / below the active item
+    // getBoundingClientRect gives viewport-relative coords; subtract sidebar's
+    // viewport top then add current scrollTop to get scroll-container-relative position.
+    const btnRect  = btn.getBoundingClientRect();
+    const navRect  = sidebar.getBoundingClientRect();
+    const btnTop    = btnRect.top  - navRect.top  + sidebar.scrollTop;
+    const btnBottom = btnRect.bottom - navRect.top + sidebar.scrollTop;
+
+    if (btnTop - PADDING < sidebar.scrollTop) {
+      // Active item is above visible area — scroll up with padding
+      sidebar.scrollTo({ top: btnTop - PADDING, behavior: 'smooth' });
+    } else if (btnBottom + PADDING > sidebar.scrollTop + sidebar.clientHeight) {
+      // Active item is below visible area — scroll down with padding
+      sidebar.scrollTo({ top: btnBottom + PADDING - sidebar.clientHeight, behavior: 'smooth' });
+    }
+  }, [activeId]);
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
@@ -135,13 +160,14 @@ export default function Docs() {
       <div className={styles.layout}>
 
         {/* ── Sidebar ──────────────────────────────────────────────── */}
-        <nav className={styles.sidebar} aria-label="Documentation navigation">
+        <nav ref={sidebarRef} className={styles.sidebar} aria-label="Documentation navigation">
           {SIDEBAR_SECTIONS.map(section => (
             <div key={section.id} className={styles.sidebarGroup}>
               <p className={styles.sidebarGroupTitle}>{section.title}</p>
               {section.items?.map(item => (
                 <button
                   key={item.id}
+                  data-sid={item.id}
                   onClick={() => scrollTo(item.id)}
                   className={linkClass(item.id)}
                 >
