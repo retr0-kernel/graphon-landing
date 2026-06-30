@@ -144,9 +144,26 @@ html.theme-transitioning *::after {
   /* FAQ details */
   details > summary { list-style: none; }
   details > summary::-webkit-details-marker { display: none; }
+
+  /* Image skeleton shimmer */
+  .img-skeleton {
+    background: linear-gradient(
+      90deg,
+      rgb(var(--c-sc) / 0.85) 0%,
+      rgb(var(--c-sc-high) / 1) 50%,
+      rgb(var(--c-sc) / 0.85) 100%
+    );
+    background-size: 200% 100%;
+    animation: img-shimmer 1.6s ease-in-out infinite;
+  }
 }
 
 /* ── Keyframes ─────────────────────────────────────────────────────────── */
+@keyframes img-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 @keyframes pulse-dot {
   0%, 100% { box-shadow: 0 0 4px currentColor; }
   50%       { box-shadow: 0 0 14px currentColor, 0 0 28px currentColor; }

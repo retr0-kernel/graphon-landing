@@ -47,9 +47,24 @@
   transform: translateY(-1px);
 }
 
+.logoImgWrap {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.logoSkeleton {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+}
+
 .logoImg {
   object-fit: contain;
   flex-shrink: 0;
+  display: block;
 }
 
 .logoMark {

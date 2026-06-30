@@ -1,9 +1,11 @@
-import { type CSSProperties } from 'react';
+import { type CSSProperties, useState, useEffect, useRef } from 'react';
 import Terminal from '../../components/terminal';
 import styles from './styles.module.css';
 import { EVENTS_LINES, COMPONENTS, TIMELINE, SCHEMA_TABLES } from './data';
 import { useInView } from '../../hooks/useInView';
-import architectureImg from '../../assets/images/architecture.png';
+import { useTheme } from '../../context/ThemeContext';
+import architectureImgDark from '../../assets/images/architecture.png';
+import architectureImgLight from '../../assets/images/architecture_light.png';
 
 export default function Architecture() {
   const { ref: headerRef,     visible: headerVisible     } = useInView<HTMLDivElement>();
@@ -14,6 +16,25 @@ export default function Architecture() {
   const { ref: schemaRef,     visible: schemaVisible     } = useInView<HTMLDivElement>();
 
   const delay = (ms: number): CSSProperties => ({ '--delay': `${ms}ms` } as CSSProperties);
+  const { resolved } = useTheme();
+  const architectureImg = resolved === 'light' ? architectureImgLight : architectureImgDark;
+  const [diagramLoaded, setDiagramLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    setDiagramLoaded(false);
+    // After React commits the new src to the DOM, check if the image is
+    // already in the browser cache. Cached images fire `load` synchronously
+    // before React's onLoad handler is attached, so they get silently missed.
+    // requestAnimationFrame fires after the browser has painted the new frame,
+    // guaranteeing the img element has the updated src when we inspect it.
+    const raf = requestAnimationFrame(() => {
+      if (imgRef.current?.complete && imgRef.current.naturalWidth > 0) {
+        setDiagramLoaded(true);
+      }
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [resolved]);
 
   return (
     <div className={styles.page}>
@@ -37,10 +58,17 @@ export default function Architecture() {
           ref={diagramRef}
           className={`${styles.diagram} ${styles.reveal} ${diagramVisible ? styles.inView : ''}`}
         >
+          {!diagramLoaded && (
+            <div className={`img-skeleton ${styles.diagramPlaceholder}`} aria-hidden="true" />
+          )}
           <img
+            ref={imgRef}
             src={architectureImg}
             alt="Graphon Platform Architecture"
             className={styles.diagramImg}
+            onLoad={() => setDiagramLoaded(true)}
+            onError={() => setDiagramLoaded(true)}
+            style={!diagramLoaded ? { display: 'none' } : undefined}
           />
         </div>
 

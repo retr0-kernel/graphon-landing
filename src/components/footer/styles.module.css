@@ -41,7 +41,7 @@
 }
 
 .brandCard {
-  @apply flex min-h-[300px] flex-col justify-between gap-8 rounded-[1.35rem] p-3 md:p-4;
+  @apply flex flex-col justify-between  rounded-[1.35rem] p-3 md:p-4;
 }
 
 .brandTop {

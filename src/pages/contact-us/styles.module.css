@@ -137,6 +137,13 @@
   @apply relative z-10 h-full min-h-[260px] w-full object-cover;
 }
 
+.photoSkeleton {
+  position: absolute;
+  inset: 0;
+  z-index: 11;
+  border-radius: 1.5rem;
+}
+
 .photoPlaceholder {
   @apply absolute inset-0 flex flex-col items-center justify-center gap-3 text-center text-on-surface-variant;
 }

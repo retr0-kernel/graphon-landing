@@ -47,6 +47,12 @@
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
 }
 
+.diagramPlaceholder {
+  @apply w-full rounded-2xl;
+  min-height: 300px;
+  aspect-ratio: 16 / 9;
+}
+
 /* ── Timeline ────────────────────────────────────────────────────── */
 .timelineSection {
   @apply space-y-6;

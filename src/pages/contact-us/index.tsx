@@ -1,4 +1,4 @@
-import { type CSSProperties } from 'react';
+import { type CSSProperties, useState, useEffect, useRef } from 'react';
 import styles from './styles.module.css';
 import { CONTACT_PAGE_DATA, getGmailComposeUrl } from './data';
 import { useInView } from '../../hooks/useInView';
@@ -8,6 +8,22 @@ export default function ContactUs() {
   const { ref: cardsRef, visible: cardsVisible } = useInView<HTMLDivElement>();
 
   const delay = (ms: number): CSSProperties => ({ '--delay': `${ms}ms` } as CSSProperties);
+  const [photosLoaded, setPhotosLoaded] = useState<boolean[]>([]);
+  const photoRefs = useRef<(HTMLImageElement | null)[]>([]);
+
+  const handlePhotoLoad = (i: number) =>
+    setPhotosLoaded(prev => { const next = [...prev]; next[i] = true; return next; });
+
+  // Cached images fire `load` before React can attach onLoad — check complete on mount.
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => {
+      photoRefs.current.forEach((img, i) => {
+        if (img?.complete && img.naturalWidth > 0) handlePhotoLoad(i);
+      });
+    });
+    return () => cancelAnimationFrame(raf);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className={styles.page}>
@@ -48,7 +64,17 @@ export default function ContactUs() {
               style={delay(index * 140)}
             >
               <div className={styles.photoFrame}>
-                <img src={developer.image} alt={developer.imageAlt} className={styles.devPhoto} />
+                {!photosLoaded[index] && (
+                  <div className={`img-skeleton ${styles.photoSkeleton}`} aria-hidden="true" />
+                )}
+                <img
+                  ref={el => { photoRefs.current[index] = el; }}
+                  src={developer.image}
+                  alt={developer.imageAlt}
+                  className={styles.devPhoto}
+                  onLoad={() => handlePhotoLoad(index)}
+                  onError={() => handlePhotoLoad(index)}
+                />
               </div>
 
               <div className={styles.devContent}>

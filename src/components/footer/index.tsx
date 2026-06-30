@@ -20,10 +20,6 @@ export default function Footer() {
               <img src={graphonLogo} alt="Graphon logo" className={styles.logoImage} />
               <span className={styles.logoText}>Graphon</span>
             </Link>
-            <span className={styles.statusPill}>
-              <span className={`${styles.statusDot} dot-pulse`} />
-              Open source
-            </span>
           </div>
 
           <p className={styles.tagline}>

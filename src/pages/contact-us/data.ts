@@ -16,13 +16,13 @@ export const CONTACT_PAGE_DATA = {
   title: 'Talk to the people building Graphon.',
   subtitle:
     'Reach the developers directly for deployment questions, enterprise discussions, support, or collaboration around Kubernetes runtime intelligence.',
-  primaryEmail: 'hello@graphon.dev',
+  primaryEmail: 'krish22092003@gmail.com',
   primaryEmailLabel: 'Primary contact',
   primaryEmailNote: 'We usually respond with the right developer context.',
   developers: [
     {
       name: 'Krish Srivastava',
-      role: 'Core Platform/Backend Engineer',
+      role: 'FullStack/Platform Engineer',
       email: 'krish22092003@gmail.com',
       linkedin: 'https://www.linkedin.com/in/krish-srivastava/',
       phone: '+91 8076001830',
@@ -31,7 +31,7 @@ export const CONTACT_PAGE_DATA = {
     },
     {
       name: 'Aryan Ranjan',
-      role: 'Frontend Engineer',
+      role: 'FullStack Engineer',
       email: 'aryanempire26@gmail.com',
       linkedin: 'https://www.linkedin.com/in/aryan-ranjan-79634124a/',
       phone: '+91 7764007705',

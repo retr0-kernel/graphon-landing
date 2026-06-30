@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { type LucideIcon, Moon, Sun, Monitor, Menu, X } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
@@ -24,6 +24,17 @@ export default function Navbar() {
   const { preference, cycle } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled]  = useState(false);
+  const [logoLoaded, setLogoLoaded] = useState(false);
+  const logoRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => {
+      if (logoRef.current?.complete && logoRef.current.naturalWidth > 0) {
+        setLogoLoaded(true);
+      }
+    });
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -44,7 +55,19 @@ export default function Navbar() {
       <nav className={styles.nav}>
         {/* Logo */}
         <Link to="/" className={styles.logoLink}>
-          <img src={graphonImg} alt="Graphon" width={40} height={40} className={styles.logoImg} />
+          <span className={styles.logoImgWrap}>
+            {!logoLoaded && <span className={`img-skeleton ${styles.logoSkeleton}`} aria-hidden="true" />}
+            <img
+              ref={logoRef}
+              src={graphonImg}
+              alt="Graphon"
+              width={40}
+              height={40}
+              className={styles.logoImg}
+              onLoad={() => setLogoLoaded(true)}
+              style={!logoLoaded ? { opacity: 0 } : undefined}
+            />
+          </span>
           <span className={styles.logoText}>Graphon</span>
         </Link>
 
