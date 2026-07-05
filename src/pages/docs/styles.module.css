@@ -446,3 +446,86 @@ tr:hover .tdBadge {
 @media (prefers-reduced-motion: reduce) {
   .reveal { transition: none; opacity: 1; transform: none; }
 }
+
+/* ── Phase 4 additions ───────────────────────────────────────────────────── */
+
+.codeBlock {
+  background: rgb(var(--c-surface-container-high) / 0.7);
+  border: 1px solid rgb(var(--c-outline-v) / 0.3);
+  border-radius: 12px;
+  padding: 16px 20px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  color: rgb(var(--c-on-surface));
+  overflow-x: auto;
+  white-space: pre;
+  margin: 12px 0;
+}
+
+.bulletList {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bulletItem {
+  display: flex;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgb(var(--c-on-surface-variant));
+}
+
+.bulletItem::before {
+  content: '→';
+  color: rgb(var(--c-tertiary));
+  flex-shrink: 0;
+}
+
+.orderedList {
+  padding: 0;
+  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  counter-reset: steps;
+}
+
+.orderedItem {
+  display: flex;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgb(var(--c-on-surface-variant));
+  counter-increment: steps;
+}
+
+.orderedItem::before {
+  content: counter(steps);
+  min-width: 24px;
+  height: 24px;
+  background: rgb(var(--c-primary) / 0.15);
+  color: rgb(var(--c-primary));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.link {
+  color: rgb(var(--c-primary));
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

@@ -15,6 +15,7 @@ export const EXTERNAL_LINKS: readonly ExternalLink[] = [
 
 export const BOTTOM_LINKS: readonly Omit<ExternalLink, 'icon' | 'isGitHub'>[] = [
   { label: 'License',  href: `${GITHUB_URL}/blob/main/LICENSE` },
+  { label: 'Get Pro',  href: `${GITHUB_URL}/issues/new?title=Pro+License+Request&labels=license` },
   { label: 'Releases', href: `${GITHUB_URL}/releases`          },
   { label: 'Issues',   href: `${GITHUB_URL}/issues`            },
 ] as const;

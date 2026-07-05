@@ -2,7 +2,7 @@ import { useState, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './styles.module.css';
 import {
-  FREE_FEATURES, ENTERPRISE_FEATURES, CLOUD_FEATURES,
+  FREE_FEATURES, PRO_FEATURES, CLOUD_FEATURES,
   COMPARE, FAQS, CTA_LINKS,
 } from './data';
 import { useInView } from '../../hooks/useInView';
@@ -97,7 +97,7 @@ export default function Pricing() {
               </span>
             </div>
             <div>
-              <p className={`${styles.tierLabel} text-primary`}>Enterprise</p>
+              <p className={`${styles.tierLabel} text-primary`}>Pro</p>
               <div className={styles.priceRow}>
                 <span className={styles.price}>Custom</span>
               </div>
@@ -108,7 +108,7 @@ export default function Pricing() {
               Get a License
             </a>
             <ul className={styles.featureList}>
-              {ENTERPRISE_FEATURES.map(f => (
+              {PRO_FEATURES.map((f: string) => (
                 <li key={f} className={styles.featureItem}>
                   <span className="material-symbols-outlined text-[16px] text-primary">check</span>
                   {f}
@@ -156,7 +156,7 @@ export default function Pricing() {
                 <tr>
                   <th className={styles.th}>Feature</th>
                   <th className={`${styles.thCenter} text-tertiary`}>Free</th>
-                  <th className={`${styles.thCenter} text-primary`}>Enterprise</th>
+                  <th className={`${styles.thCenter} text-primary`}>Pro</th>
                   <th className={`${styles.thCenter} text-secondary`}>Cloud</th>
                 </tr>
               </thead>
@@ -168,7 +168,7 @@ export default function Pricing() {
                   >
                     <td className={styles.tdFeature}>{row.feature}</td>
                     <td className={styles.tdCenter}><Cell value={row.free} /></td>
-                    <td className={styles.tdCenter}><Cell value={row.enterprise} /></td>
+                    <td className={styles.tdCenter}><Cell value={row.pro} /></td>
                     <td className={styles.tdCenter}><Cell value={row.cloud} /></td>
                   </tr>
                 ))}

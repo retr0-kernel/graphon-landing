@@ -10,11 +10,19 @@ import {
   COMPONENTS, DATA_FLOW,
   ENV_VARS, DEPLOYMENT_MODES,
   GRAPH_ENDPOINTS, SNAPSHOT_ENDPOINTS, DRIFT_ENDPOINTS, EXPORT_ENDPOINTS, SEARCH_ENDPOINTS,
+  TELEMETRY_ENDPOINTS, COST_API_ENDPOINTS, SCAN_API_ENDPOINTS, SLO_API_ENDPOINTS,
   AUTH_CURL_LINES,
   GITHUB_WEBHOOK_LINES, GITLAB_WEBHOOK_LINES,
   OIDC_LINES, RBAC_ROLES,
   APPLY_KEY_LINES, FREE_FEATURES_TABLE,
+  PRO_LICENSE_STEPS,
   HELM_INSTALL_LINES, HELM_VALUES,
+  OTLP_LINES, OTLP_HELM_YAML,
+  PROMETHEUS_ANNOTATION_YAML, PROMETHEUS_HELM_YAML, PROMETHEUS_SECRET_YAML,
+  LOG_FORMAT_YAML,
+  COST_HELM_YAML, COST_UI_NOTE,
+  AZ_LABEL_YAML, AZ_HELM_YAML, AZ_UI_NOTE,
+  SCAN_HELM_YAML, SCAN_UI_NOTE,
 } from './data';
 import type { ApiEndpoint } from './data';
 
@@ -360,6 +368,105 @@ export default function Docs() {
             </SubSection>
           </Section>
 
+          {/* ── Observability (Phase 4) ───────────────────────────── */}
+          <Section id="observability" title="Observability (Phase 4)">
+            <SubSection id="otlp-traces" title="OTLP Tracing">
+              <p className={styles.prose}>
+                The Graphon agent runs a full <IC>OTLP/HTTP</IC> receiver on port <IC>4318</IC> on every
+                Kubernetes node. Configure your OpenTelemetry SDK to export traces to the local node IP using
+                the <IC>status.hostIP</IC> Downward API field.
+              </p>
+              <Callout icon="info">
+                OTLP/HTTP supports both <IC>http/json</IC> (JSON-encoded protos) and{' '}
+                <IC>http/protobuf</IC> (binary protos). Both are fully decoded — no partial implementation.
+              </Callout>
+              <Terminal title="kubernetes-deployment.yaml" lines={OTLP_LINES} copyable />
+              <pre className={styles.codeBlock}>{OTLP_HELM_YAML}</pre>
+            </SubSection>
+
+            <SubSection id="prometheus" title="Prometheus Scraping">
+              <p className={styles.prose}>
+                The agent scrapes pods with the <IC>prometheus.io/scrape: "true"</IC> annotation on the same
+                node. Auth credentials are read from Kubernetes Secrets at scrape time.
+              </p>
+              <pre className={styles.codeBlock}>{PROMETHEUS_ANNOTATION_YAML}</pre>
+              <p className={styles.prose} style={{ marginTop: '1rem' }}>
+                For endpoints requiring authentication, create a Kubernetes Secret and reference it:
+              </p>
+              <pre className={styles.codeBlock}>{PROMETHEUS_SECRET_YAML}</pre>
+              <p className={styles.prose} style={{ marginTop: '1rem' }}>Configure global defaults in Helm:</p>
+              <pre className={styles.codeBlock}>{PROMETHEUS_HELM_YAML}</pre>
+            </SubSection>
+
+            <SubSection id="log-collection" title="Log Collection">
+              <p className={styles.prose}>
+                The agent tails <IC>/var/log/containers/*.log</IC> on every node. All Kubernetes container
+                log formats are supported with no configuration required.
+              </p>
+              <pre className={styles.codeBlock}>{LOG_FORMAT_YAML}</pre>
+              <Callout icon="info">
+                Multi-line logs (CRI-O partial lines tagged <IC>P</IC>) are assembled before being shipped.
+                Log rotation is handled automatically — no duplicate or dropped lines.
+              </Callout>
+            </SubSection>
+
+            <SubSection id="cost-config" title="Cost Tracking">
+              <p className={styles.prose}>
+                Graphon classifies every connection by traffic type (same-AZ, cross-AZ, internet) using
+                embedded AWS/GCP/Azure CIDR snapshots. Egress cost is calculated from per-GB rates you
+                configure. <strong>Both bytes sent (egress, billed) and bytes received (ingress, informational)
+                are always shown in the UI</strong> so you can see the full picture.
+              </p>
+              <Callout icon="warning" warn>
+                The built-in per-GB rates are public list prices. Set your actual negotiated rate in
+                Settings → Cost Config or in <IC>values.yaml</IC> to get accurate billing estimates.
+              </Callout>
+              <pre className={styles.codeBlock}>{COST_HELM_YAML}</pre>
+              <ul className={styles.bulletList}>
+                {COST_UI_NOTE.map(note => <li key={note} className={styles.bulletItem}>{note}</li>)}
+              </ul>
+            </SubSection>
+
+            <SubSection id="az-detection" title="AZ Detection">
+              <p className={styles.prose}>
+                Cross-AZ cost calculation requires the <IC>topology.kubernetes.io/zone</IC> node label.
+                Most managed Kubernetes services (EKS, GKE, AKS) set this automatically.
+              </p>
+              <pre className={styles.codeBlock}>{AZ_LABEL_YAML}</pre>
+              <p className={styles.prose} style={{ marginTop: '1rem' }}>
+                For bare-metal or on-prem clusters, provide a static mapping:
+              </p>
+              <pre className={styles.codeBlock}>{AZ_HELM_YAML}</pre>
+              <ul className={styles.bulletList}>
+                {AZ_UI_NOTE.map(note => <li key={note} className={styles.bulletItem}>{note}</li>)}
+              </ul>
+            </SubSection>
+
+            <SubSection id="scan-config" title="Reliability Scanner">
+              <p className={styles.prose}>
+                The scanner runs 13 checks across Deployments, StatefulSets, DaemonSets, Services, and
+                CronJobs. All checks are configurable — disable any check, exclude namespaces, exclude
+                specific workloads, or change the owner label key.
+              </p>
+              <pre className={styles.codeBlock}>{SCAN_HELM_YAML}</pre>
+              <ul className={styles.bulletList}>
+                {SCAN_UI_NOTE.map(note => <li key={note} className={styles.bulletItem}>{note}</li>)}
+              </ul>
+            </SubSection>
+
+            <SubSection id="slo" title="SLO Tracking">
+              <p className={styles.prose}>
+                Define Service Level Objectives (SLOs) per service. The SLO engine computes burn rate and
+                compliance from ClickHouse trace and connection data. Supported SLI types:{' '}
+                <IC>availability</IC>, <IC>latency_p99</IC>, <IC>latency_p95</IC>, <IC>error_rate</IC>.
+              </p>
+              <Callout icon="info">
+                SLOs are defined via the UI (Settings → SLO) or the REST API. The burn rate is recalculated
+                every 5 minutes and surfaced as a graph overlay.
+              </Callout>
+            </SubSection>
+          </Section>
+
           {/* ── API Reference ──────────────────────────────────────── */}
           <Section id="api-reference" title="API Reference">
             <SubSection id="auth-headers" title="Authentication">
@@ -409,6 +516,41 @@ export default function Docs() {
                 namespaces, and ownership records.
               </p>
               <EndpointTable endpoints={SEARCH_ENDPOINTS} />
+            </SubSection>
+
+            <SubSection id="telemetry-api" title="Telemetry">
+              <p className={styles.prose}>
+                All telemetry endpoints require ClickHouse to be configured. They respond with HTTP 501
+                when ClickHouse is not available. The <IC>connections</IC> endpoint returns both{' '}
+                <IC>bytes_sent</IC> (egress, billed) and <IC>bytes_recv</IC> (ingress, informational).
+              </p>
+              <EndpointTable endpoints={TELEMETRY_ENDPOINTS} />
+            </SubSection>
+
+            <SubSection id="cost-api" title="Cost & Config">
+              <p className={styles.prose}>
+                Cost and config endpoints require a Pro license. Config endpoints are also available via
+                the UI (Settings → Cost Config). Changes via API or UI are stored in PostgreSQL and applied
+                immediately.
+              </p>
+              <EndpointTable endpoints={COST_API_ENDPOINTS} />
+            </SubSection>
+
+            <SubSection id="scan-api" title="Scan & Config">
+              <p className={styles.prose}>
+                Scan config and findings endpoints require a Pro license. All 13 check names are returned
+                by <IC>GET /api/v1/scan/config/checks</IC> along with their severity, title, and description
+                — the UI uses this to render the toggle list.
+              </p>
+              <EndpointTable endpoints={SCAN_API_ENDPOINTS} />
+            </SubSection>
+
+            <SubSection id="slo-api" title="SLO">
+              <p className={styles.prose}>
+                Create and manage SLO definitions. Burn rate is the ratio of error budget consumed per hour.
+                A burn rate &gt; 1.0 means you will exhaust the error budget before the end of the window.
+              </p>
+              <EndpointTable endpoints={SLO_API_ENDPOINTS} />
             </SubSection>
           </Section>
 
@@ -505,7 +647,7 @@ export default function Docs() {
                     <tr>
                       <th className={styles.th}>Feature</th>
                       <th className={styles.th} style={{ textAlign: 'center' }}>Free</th>
-                      <th className={styles.th} style={{ textAlign: 'center' }}>Enterprise</th>
+                      <th className={styles.th} style={{ textAlign: 'center' }}>Pro</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -516,7 +658,7 @@ export default function Docs() {
                           <FeatureCell value={row.free} />
                         </td>
                         <td className={styles.td} style={{ textAlign: 'center' }}>
-                          <FeatureCell value={row.enterprise} />
+                          <FeatureCell value={row.pro} />
                         </td>
                       </tr>
                     ))}
@@ -527,16 +669,33 @@ export default function Docs() {
 
             <SubSection id="apply-key" title="Applying a License Key">
               <p className={styles.prose}>
-                Enterprise license keys are RS256-signed JWTs. They encode the plan name, allowed
-                feature flags, numeric limits (clusters, users, retention days), an expiry date,
-                and metadata (org name, issued-by). The key is verified locally against an embedded
-                RSA public key — no internet connection is required for validation.
+                Pro license keys are RS256-signed JWTs generated using keygen.sh, scoped to your
+                organisation name and cluster count. They are verified locally against an embedded RSA
+                public key — no internet connection is required for validation.
               </p>
               <Terminal title="apply-license.sh" lines={APPLY_KEY_LINES} copyable />
               <Callout icon="info">
                 After a license expires, Graphon enters a 14-day grace period (configurable via{' '}
-                <IC>LICENSE_GRACE_PERIOD_DAYS</IC>) before falling back to the Free tier. Scheduled
-                snapshots will stop, and Enterprise-only exports will return HTTP 402.
+                <IC>LICENSE_GRACE_PERIOD_DAYS</IC>) before falling back to the Free tier.
+              </Callout>
+            </SubSection>
+
+            <SubSection id="pro-license" title="Getting a Pro Key">
+              <p className={styles.prose}>
+                Pro license keys are issued manually until billing integration is available. The process
+                takes under 24 hours:
+              </p>
+              <ol className={styles.orderedList}>
+                {PRO_LICENSE_STEPS.map(s => (
+                  <li key={s.step} className={styles.orderedItem}>
+                    <strong>{s.title}</strong> — {s.detail}
+                  </li>
+                ))}
+              </ol>
+              <Callout icon="info">
+                Links: <a href="https://github.com/retr0-kernel/graphon-helm/issues/new?title=Pro+License+Request&labels=license" className={styles.link} target="_blank" rel="noopener noreferrer">Open GitHub Issue</a>
+                {' · '}
+                <a href="https://linkedin.com/in/retr0-kernel" className={styles.link} target="_blank" rel="noopener noreferrer">LinkedIn</a>
               </Callout>
             </SubSection>
           </Section>
