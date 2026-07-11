@@ -8,6 +8,7 @@ import Features from './pages/features';
 import Architecture from './pages/architecture';
 import Pricing from './pages/pricing';
 import Docs from './pages/docs';
+import Blog from './pages/blog';
 import ContactUs from './pages/contact-us/index';
 
 function ScrollToTop() {
@@ -40,6 +41,7 @@ export default function App() {
             <Route path="/architecture" element={<Architecture />} />
             <Route path="/pricing"      element={<Pricing />} />
             <Route path="/docs"         element={<Docs />} />
+            <Route path="/blog/*"       element={<Blog />} />
             <Route path="/contact-us"   element={<ContactUs />} />
           </Routes>
         </main>

@@ -10,6 +10,7 @@ export const ROUTES = {
   architecture: '/architecture',
   pricing:      '/pricing',
   docs:         '/docs',
+  blog:         '/blog',
   contactUs:    '/contact-us',
 } as const;
 
@@ -19,4 +20,5 @@ export const NAV_LINKS: readonly NavRoute[] = [
   { to: ROUTES.architecture, label: 'Architecture', end: false },
   { to: ROUTES.pricing,      label: 'Pricing',      end: false },
   { to: ROUTES.docs,         label: 'Docs',         end: false },
+  { to: ROUTES.blog,         label: 'Blog',         end: false },
 ] as const;
