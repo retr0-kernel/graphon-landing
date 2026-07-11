@@ -11,6 +11,7 @@ export interface Feature {
 
 export const BADGE_STYLE: Record<string, string> = {
   Core:       'bg-tertiary/10 text-tertiary',
+  Pro:        'bg-primary/10 text-primary',
   Enterprise: 'bg-secondary/10 text-secondary',
 };
 
@@ -23,13 +24,16 @@ export const FREE_FEATURES: readonly string[] = [
   'REST API',
 ] as const;
 
-export const ENTERPRISE_FEATURES: readonly string[] = [
+export const PRO_FEATURES: readonly string[] = [
   'Everything in Free',
   'RBAC (Viewer / Developer / Admin)',
   'OIDC / SSO with group mapping',
   'GitHub & GitLab PR impact comments',
   'Scheduled graph snapshots',
   'Multi-cluster registry',
+  'Logs, traces & metrics (90d retention)',
+  'Cost attribution & SLO tracking',
+  'Reliability scanner & review center',
 ] as const;
 
 export const FEATURES: readonly Feature[] = [
@@ -159,6 +163,70 @@ export const FEATURES: readonly Feature[] = [
       'Per-cluster isolation with shared tenant credentials',
       'Graph overlay across clusters (coming soon)',
       'Enterprise license supports unlimited clusters',
+    ],
+  },
+  {
+    icon: 'article',
+    badge: 'Pro',
+    title: 'Logs, Traces & Metrics',
+    color: 'text-primary',
+    bg: 'bg-primary/5',
+    border: 'border-primary/20',
+    description:
+      'ClickHouse-backed observability correlated with the dependency graph. Jump from a service node straight into its recent logs, distributed traces, and RED metrics — without leaving Graphon.',
+    detail: [
+      'Tail logs by node with structured filter',
+      'Trace waterfall per dependency edge',
+      'Request rate, error rate, duration per service',
+      '90 days retention on Pro, 30 on Free',
+    ],
+  },
+  {
+    icon: 'payments',
+    badge: 'Pro',
+    title: 'Cost Attribution',
+    color: 'text-[#ff9e64]',
+    bg: 'bg-[#ff9e64]/5',
+    border: 'border-[#ff9e64]/20',
+    description:
+      'Allocate cloud spend to every service in the graph. Custom pricing tables, known-port classification, and per-team rollup so finance and engineering speak the same language.',
+    detail: [
+      'Configurable per-provider pricing tables',
+      'Cost rolled up to team / owner labels',
+      'Trend view with month-over-month delta',
+      'Export to CSV / JSON for billing systems',
+    ],
+  },
+  {
+    icon: 'track_changes',
+    badge: 'Pro',
+    title: 'SLO Tracking',
+    color: 'text-secondary',
+    bg: 'bg-secondary/5',
+    border: 'border-secondary/20',
+    description:
+      'Define SLOs against any service or endpoint. Burn-rate alerts fire before users feel pain. SLO health is anchored to the dependency graph — a degraded dependency is immediately visible on every upstream owner.',
+    detail: [
+      'Availability and latency SLO definitions',
+      'Multi-window burn-rate alerting',
+      'SLO budget remaining graphed over time',
+      'Per-owner SLO health dashboard',
+    ],
+  },
+  {
+    icon: 'health_and_safety',
+    badge: 'Pro',
+    title: 'Reliability Scanner',
+    color: 'text-tertiary',
+    bg: 'bg-tertiary/5',
+    border: 'border-tertiary/20',
+    description:
+      'Continuous configuration checks across the dependency graph. Missing resource limits, single points of failure, dangling services, unowned nodes. Findings land in the Review Center so the right team owns the fix.',
+    detail: [
+      '20+ built-in checks covering cost, security, reliability',
+      'Custom check rules via declarative config',
+      'Findings flow into Review Center with owner attribution',
+      'Slack notifications on new high-severity findings',
     ],
   },
 ] as const;

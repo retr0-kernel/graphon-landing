@@ -31,6 +31,7 @@ export const SIDEBAR_SECTIONS: readonly DocSection[] = [
     items: [
       { id: 'env-vars',         label: 'Environment Vars'   },
       { id: 'deployment-modes', label: 'Deployment Modes'   },
+      { id: 'agent-configmap',  label: 'Agent ConfigMap'    },
     ],
   },
   {
@@ -273,6 +274,41 @@ agent:
     otlpEnabled: true
     otlpPort: 4318           # Default: 4318 (OTLP/HTTP standard port)`;
 
+export const AGENT_CONFIGMAP_YAML = `# graphon-agent-config ConfigMap
+# Mounted at /etc/graphon/config.yaml in the agent DaemonSet.
+# All keys are optional — defaults shown below match the Free tier behavior.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: graphon-agent-config
+  namespace: graphon
+data:
+  config.yaml: |
+    agent:
+      # ── Cluster identity ────────────────────────────────────────────────
+      clusterId: "my-cluster"          # Auto-detected from node label if omitted
+
+      # ── Telemetry ingestion (Phase 4 — Pro) ────────────────────────────
+      telemetry:
+        tcpAcceptEnabled:    true     # Capture incoming TCP connections
+        tcpSendmsgEnabled:   true     # Capture outgoing TCP byte counts
+        udpEnabled:          true     # Capture UDP sendmsg / recvmsg
+        dnsResolutionEnabled: true    # Resolve DNS to service names (Pro)
+        dnsCacheSize:        4096     # LRU cache for DNS resolutions
+        serviceMeshAwareness: true    # Skip envoy/istio-proxy sidecars
+        podInformerResync:   "5m"     # How often to refresh the IP→Pod cache
+
+        # Batching — controls how often the agent flushes to ClickHouse
+        batching:
+          flushInterval:     "5s"     # Lower = fresher data, more CPU
+          maxBatchSize:      5000     # Records per flush
+          maxQueueSize:      50000    # Backpressure threshold
+
+      # ── Map sizing (tune for cluster size) ─────────────────────────────
+      maps:
+        connMaxEntries:      262144   # Active connections tracked
+        flowMaxEntries:      1048576  # Flow records queued for flush
+`;
 // ── Observability — Prometheus Scraping ────────────────────────────────────
 
 export const PROMETHEUS_ANNOTATION_YAML = `# Add these annotations to any Pod that exposes /metrics:

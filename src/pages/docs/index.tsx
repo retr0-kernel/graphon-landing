@@ -17,7 +17,7 @@ import {
   APPLY_KEY_LINES, FREE_FEATURES_TABLE,
   PRO_LICENSE_STEPS,
   HELM_INSTALL_LINES, HELM_VALUES,
-  OTLP_LINES, OTLP_HELM_YAML,
+  OTLP_LINES, OTLP_HELM_YAML, AGENT_CONFIGMAP_YAML,
   PROMETHEUS_ANNOTATION_YAML, PROMETHEUS_HELM_YAML, PROMETHEUS_SECRET_YAML,
   LOG_FORMAT_YAML,
   COST_HELM_YAML, COST_UI_NOTE,
@@ -365,6 +365,19 @@ export default function Docs() {
                   </div>
                 ))}
               </div>
+            </SubSection>
+
+            <SubSection id="agent-configmap" title="Agent ConfigMap">
+              <p className={styles.prose}>
+                The agent DaemonSet reads its runtime configuration from a mounted ConfigMap
+                (<IC>graphon-agent-config</IC>) at <IC>/etc/graphon/config.yaml</IC>. All keys are optional
+                — the defaults shown below match Free tier behavior. Pro deployments typically set
+                <IC> dnsResolutionEnabled: true</IC> and larger <IC>maps.flowMaxEntries</IC>.
+              </p>
+              <Callout icon="tune">
+                Reloaded automatically every 60 s. No agent restart needed when changing batching or map sizes.
+              </Callout>
+              <pre className={styles.codeBlock}>{AGENT_CONFIGMAP_YAML}</pre>
             </SubSection>
           </Section>
 

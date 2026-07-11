@@ -1,6 +1,6 @@
 import { type CSSProperties } from 'react';
 import styles from './styles.module.css';
-import { FEATURES, BADGE_STYLE, FREE_FEATURES, ENTERPRISE_FEATURES } from './data';
+import { FEATURES, BADGE_STYLE, FREE_FEATURES, PRO_FEATURES } from './data';
 import { useInView } from '../../hooks/useInView';
 
 export default function Features() {
@@ -23,7 +23,7 @@ export default function Features() {
           <h1 className={styles.title}>Everything Graphon can do</h1>
           <p className={styles.subtitle}>
             Core features are free forever in the self-hosted tier.
-            Enterprise features unlock with a license key.
+            Pro features unlock with a license key.
           </p>
         </div>
 
@@ -70,11 +70,11 @@ export default function Features() {
             </ul>
           </div>
           <div className={`${styles.reveal} ${comparisonVisible ? styles.inView : ''}`} style={delay(220)}>
-            <p className={`${styles.tierTitle} ${styles.tierEnterprise}`}>Enterprise</p>
+            <p className={`${styles.tierTitle} ${styles.tierPro}`}>Pro — Self-Hosted</p>
             <ul className={styles.tierList}>
-              {ENTERPRISE_FEATURES.map(f => (
+              {PRO_FEATURES.map(f => (
                 <li key={f} className={styles.tierItem}>
-                  <span className={`material-symbols-outlined ${styles.tierCheckEnterprise}`}>check</span>
+                  <span className={`material-symbols-outlined ${styles.tierCheckPro}`}>check</span>
                   {f}
                 </li>
               ))}

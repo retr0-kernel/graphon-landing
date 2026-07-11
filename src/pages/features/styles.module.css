@@ -332,3 +332,11 @@
     transform: none;
   }
 }
+
+.tierPro {
+  @apply text-primary;
+}
+
+.tierCheckPro {
+  @apply text-[16px] text-primary;
+}
