@@ -1,0 +1,103 @@
+/* AuthorBadge — the byline shown on every blog card and on the post header.
+ * Always renders a circular thumbnail on the LEFT (photo or initials fallback)
+ * with the author name (and optional role) on the RIGHT.
+ *
+ * Colors follow the global theme tokens declared in src/index.css — the
+ * card / page surfaces are dark in dark mode and light in light mode, and
+ * the badge text + ring automatically follow suit so the byline stays
+ * legible against either background.
+ */
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  overflow: hidden;
+  flex: 0 0 auto;
+  /* Brand accent gradient — these literal colors read well on both
+   * dark hero backgrounds and the near-white card surface. */
+  background: linear-gradient(135deg, #4d3aff 0%, #7b61ff 100%);
+  color: #ffffff;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow:
+    0 0 0 1px rgb(var(--c-sec-ctr) / 0.25),
+    0 2px 8px rgb(var(--c-sc-lowest) / 0.4);
+}
+
+.avatarImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarInitials {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  text-transform: uppercase;
+}
+
+.text {
+  display: inline-flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.15;
+}
+
+.name {
+  color: rgb(var(--c-on-surface));
+  font-weight: 600;
+  font-size: 0.92rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.role {
+  color: rgb(var(--c-on-sv));
+  font-size: 0.78rem;
+  margin-top: 0.1rem;
+}
+
+/* ---- sizes ---- */
+
+.sm .avatar {
+  width: 28px;
+  height: 28px;
+  font-size: 0.7rem;
+}
+
+.sm .name {
+  font-size: 0.82rem;
+}
+
+.md .avatar {
+  width: 38px;
+  height: 38px;
+  font-size: 0.82rem;
+}
+
+.md .name {
+  font-size: 0.95rem;
+}
+
+.md .role {
+  font-size: 0.78rem;
+}

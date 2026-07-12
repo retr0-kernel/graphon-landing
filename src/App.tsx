@@ -41,7 +41,8 @@ export default function App() {
             <Route path="/architecture" element={<Architecture />} />
             <Route path="/pricing"      element={<Pricing />} />
             <Route path="/docs"         element={<Docs />} />
-            <Route path="/blog/*"       element={<Blog />} />
+            <Route path="/blog"         element={<Blog />} />
+            <Route path="/blog/:slug"   element={<Blog />} />
             <Route path="/contact-us"   element={<ContactUs />} />
           </Routes>
         </main>
