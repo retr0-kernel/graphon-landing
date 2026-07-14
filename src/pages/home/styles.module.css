@@ -108,7 +108,7 @@
 
 /* ── Quick Install ──────────────────────────────────────────────────── */
 .install {
-  @apply py-16 px-6 bg-surface-container-lowest/50;
+  @apply py-16 px-6 bg-surface-container-lowest/50 overflow-x-hidden;
 }
 
 .installInner {

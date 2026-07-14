@@ -1,5 +1,5 @@
 .page {
-  @apply py-16 px-6;
+  @apply py-16 px-6 overflow-x-hidden;
 }
 
 .inner {

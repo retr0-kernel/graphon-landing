@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useRef, type CSSProperties } from 'react';
+import { useMemo, useEffect, useRef, useState, type CSSProperties } from 'react';
 import Terminal from '../../components/terminal';
 import styles from './styles.module.css';
 import { useActiveSection } from '../../hooks/useActiveSection';
@@ -130,6 +130,17 @@ export default function Docs() {
 
   const activeId = useActiveSection(allIds);
   const sidebarRef = useRef<HTMLElement>(null);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+  // Label of the currently active item, shown on the mobile "on this page" toggle
+  const activeLabel = useMemo(() => {
+    for (const section of SIDEBAR_SECTIONS) {
+      const match = section.items?.find(i => i.id === activeId);
+      if (match) return match.label;
+      if (section.id === activeId) return section.title;
+    }
+    return SIDEBAR_SECTIONS[0]?.title ?? 'Contents';
+  }, [activeId]);
 
   // Auto-scroll the sidebar so the active item is always fully visible with padding
   useEffect(() => {
@@ -158,6 +169,7 @@ export default function Docs() {
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setMobileNavOpen(false);
   };
 
   const linkClass = (id: string) =>
@@ -169,21 +181,40 @@ export default function Docs() {
 
         {/* ── Sidebar ──────────────────────────────────────────────── */}
         <nav ref={sidebarRef} className={styles.sidebar} aria-label="Documentation navigation">
-          {SIDEBAR_SECTIONS.map(section => (
-            <div key={section.id} className={styles.sidebarGroup}>
-              <p className={styles.sidebarGroupTitle}>{section.title}</p>
-              {section.items?.map(item => (
-                <button
-                  key={item.id}
-                  data-sid={item.id}
-                  onClick={() => scrollTo(item.id)}
-                  className={linkClass(item.id)}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-          ))}
+          <button
+            type="button"
+            className={styles.sidebarToggle}
+            aria-expanded={mobileNavOpen}
+            onClick={() => setMobileNavOpen(o => !o)}
+          >
+            <span className={styles.sidebarToggleText}>
+              <span className={styles.sidebarToggleEyebrow}>On this page</span>
+              <span className={styles.sidebarToggleActive}>{activeLabel}</span>
+            </span>
+            <span
+              className={`material-symbols-outlined ${styles.sidebarToggleIcon} ${mobileNavOpen ? styles.sidebarToggleIconOpen : ''}`}
+            >
+              expand_more
+            </span>
+          </button>
+
+          <div className={`${styles.sidebarPanel} ${mobileNavOpen ? styles.sidebarPanelOpen : ''}`}>
+            {SIDEBAR_SECTIONS.map(section => (
+              <div key={section.id} className={styles.sidebarGroup}>
+                <p className={styles.sidebarGroupTitle}>{section.title}</p>
+                {section.items?.map(item => (
+                  <button
+                    key={item.id}
+                    data-sid={item.id}
+                    onClick={() => scrollTo(item.id)}
+                    className={linkClass(item.id)}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            ))}
+          </div>
         </nav>
 
         {/* ── Main content ─────────────────────────────────────────── */}
