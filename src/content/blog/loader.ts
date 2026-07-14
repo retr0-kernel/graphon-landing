@@ -40,7 +40,8 @@ export type BlogBlock =
   | { kind: 'h3'; text: string }
   | { kind: 'code'; language: string; text: string }
   | { kind: 'quote'; text: string }
-  | { kind: 'list'; ordered: boolean; items: string[] };
+  | { kind: 'list'; ordered: boolean; items: string[] }
+  | { kind: 'table'; header: string[]; rows: string[][] };
 
 // ---------------------------------------------------------------------------
 // Raw file import
@@ -240,6 +241,32 @@ export function parseMarkdown(src: string): BlogBlock[] {
         i += 1;
       }
       blocks.push({ kind: 'quote', text: buf.join(' ').trim() });
+      continue;
+    }
+
+    // GFM-style pipe table: a header row immediately followed by a
+    // separator row of dashes (optionally with alignment colons), e.g.
+    //   | Program | Hook | Purpose |
+    //   | --- | --- | --- |
+    //   | `tcp_connect.bpf.c` | kprobe | ... |
+    const nextLine = lines[i + 1];
+    const isTableSeparator = (l: string | undefined) =>
+      !!l && /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)+\|?\s*$/.test(l);
+    if (line.includes('|') && isTableSeparator(nextLine)) {
+      const splitRow = (row: string): string[] => {
+        let r = row.trim();
+        if (r.startsWith('|')) r = r.slice(1);
+        if (r.endsWith('|')) r = r.slice(0, -1);
+        return r.split('|').map(cell => cell.trim());
+      };
+      const header = splitRow(line);
+      i += 2; // skip header row + separator row
+      const rows: string[][] = [];
+      while (i < lines.length && lines[i].trim() !== '' && lines[i].includes('|')) {
+        rows.push(splitRow(lines[i]));
+        i += 1;
+      }
+      blocks.push({ kind: 'table', header, rows });
       continue;
     }
 

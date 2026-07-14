@@ -564,6 +564,51 @@
 
 .list li::marker { color: rgb(var(--c-primary)); }
 
+.tableWrap {
+  overflow-x: auto;
+  margin: 1rem 0;
+  border: 1px solid rgb(var(--c-outline-v) / 0.5);
+  border-radius: 1rem;
+  background: rgb(var(--c-sc-lowest) / 0.6);
+  box-shadow: 0 16px 40px rgb(var(--c-sc-lowest) / 0.2);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.th {
+  padding: 0.85rem 1.15rem;
+  border-bottom: 1px solid rgb(var(--c-outline-v) / 0.5);
+  background: rgb(var(--c-sc-high) / 0.5);
+  color: rgb(var(--c-primary));
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.td {
+  padding: 0.85rem 1.15rem;
+  border-top: 1px solid rgb(var(--c-outline-v) / 0.28);
+  color: rgb(var(--c-on-sv));
+  font-size: 0.9rem;
+  line-height: 1.6;
+  vertical-align: top;
+}
+
+.table tr:hover .td {
+  background: rgb(var(--c-sc-high) / 0.22);
+}
+
+.td .inlineCode,
+.th .inlineCode {
+  white-space: nowrap;
+}
+
 .codeWrap {
   position: relative;
   overflow: hidden;

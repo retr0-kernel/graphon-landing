@@ -17,6 +17,16 @@ function formatDate(iso: string): string {
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
+/** Renders a link label, splitting out any `` `inline code` `` segments it contains. */
+function renderLinkLabel(label: string): JSX.Element[] {
+  const parts = label.split(/(`[^`]+`)/g);
+  return parts.map((part, i) =>
+    part.startsWith('`') && part.endsWith('`')
+      ? <code key={i} className={styles.inlineCode}>{part.slice(1, -1)}</code>
+      : <Fragment key={i}>{part}</Fragment>
+  );
+}
+
 /** Render a single inline-formatting segment as JSX. Used inside Block renderers. */
 function renderInline(text: string): JSX.Element[] {
   const tokens = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/g);
@@ -42,7 +52,7 @@ function renderInline(text: string): JSX.Element[] {
           target={isExternal ? '_blank' : undefined}
           rel={isExternal ? 'noopener noreferrer' : undefined}
         >
-          {label}
+          {renderLinkLabel(label)}
         </a>
       );
     }
@@ -75,6 +85,29 @@ function Block({ block }: { block: BlogBlock }) {
         <div className={styles.codeWrap}>
           <span className={styles.codeLang}>{block.language}</span>
           <pre className={styles.codeBlock}><code>{block.text}</code></pre>
+        </div>
+      );
+    case 'table':
+      return (
+        <div className={styles.tableWrap}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                {block.header.map((cell, i) => (
+                  <th key={i} className={styles.th}>{renderInline(cell)}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {block.rows.map((row, ri) => (
+                <tr key={ri}>
+                  {row.map((cell, ci) => (
+                    <td key={ci} className={styles.td}>{renderInline(cell)}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       );
   }

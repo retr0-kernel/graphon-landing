@@ -41,8 +41,18 @@ The filename **without** the `.md` extension becomes the URL slug. So `ebpf-agen
 | `1. item` | Ordered list. |
 | `**bold**`, `*italic*`, `` `code` `` | Inline emphasis. |
 | `[label](url)` | Link, opens in the same tab. |
+| `[`code label`](url)` | Link with an inline-code label. |
+| GFM pipe table (header row + `\| --- \|` separator row) | Rendered as a scrollable table. |
 
-Anything else (tables, images, raw HTML, footnotes) is **not** rendered yet. Add a feature request to the engineering channel if you need it.
+Anything else (images, raw HTML, footnotes) is **not** rendered yet. Add a feature request to the engineering channel if you need it.
+
+### Table example
+
+```text
+| Column A | Column B |
+| --- | --- |
+| value 1 | value 2 |
+```
 
 ## Where to put new posts
 
