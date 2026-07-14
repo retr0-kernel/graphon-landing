@@ -1,443 +1,698 @@
-/* ========================================================================
-   Blog page — index grid + single post view
-
-   Color strategy:
-   - All visible colors reference the global CSS tokens defined in
-     src/index.css (:root for dark, [data-theme="light"] for light).
-   - A [data-theme="light"] block at the bottom overrides the few properties
-     that dark/light polarise (e.g. hero gradient, card background opacity).
-   - Uses raw RGB triplets with / <alpha-value> so the same property works in
-     Tailwind utilities AND in these module classes.
-   ======================================================================== */
-
 .page {
+  position: relative;
   min-height: calc(100vh - 80px);
-  padding: 6rem 1.5rem 8rem;
+  overflow: hidden;
+  padding: 5rem 1.5rem 8rem;
   background:
-    linear-gradient(180deg, rgb(var(--c-sc-lowest)) 0%, rgb(var(--c-sc-low)) 100%);
+    linear-gradient(rgb(var(--c-bg) / 0.68), rgb(var(--c-bg) / 0.96)),
+    radial-gradient(circle at 50% -20%, rgb(var(--c-primary) / 0.12), transparent 46%);
+}
+
+.orbOne,
+.orbTwo {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 999px;
+  filter: blur(90px);
+}
+
+.orbOne {
+  top: 4rem;
+  right: -12rem;
+  width: 32rem;
+  height: 32rem;
+  background: rgb(var(--c-secondary) / 0.12);
+}
+
+.orbTwo {
+  top: 34rem;
+  left: -16rem;
+  width: 36rem;
+  height: 36rem;
+  background: rgb(var(--c-primary) / 0.1);
 }
 
 .inner,
 .articleInner {
-  max-width: 64rem;
+  position: relative;
+  z-index: 1;
+  max-width: 80rem;
   margin: 0 auto;
 }
 
-.articleInner {
-  max-width: 44rem;
+/* Hero */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(20rem, 0.7fr);
+  align-items: stretch;
+  gap: 1.5rem;
+  margin-bottom: 6rem;
 }
 
-.header,
-.articleHeader {
-  margin-bottom: 3.5rem;
+.heroCopy {
+  display: flex;
+  min-height: 27rem;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1rem, 4vw, 3.5rem) 0;
 }
 
-/* ------------------------------------------------------------------ Header */
-
-.eyebrow {
-  display: inline-block;
+.eyebrow,
+.articleEyebrow,
+.sectionEyebrow {
+  margin: 0;
+  color: rgb(var(--c-primary));
   font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgb(var(--c-secondary));
-  margin-bottom: 1rem;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: fit-content;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid rgb(var(--c-primary) / 0.22);
+  border-radius: 999px;
+  background: rgb(var(--c-primary) / 0.06);
+  backdrop-filter: blur(14px);
 }
 
 .title,
 .articleTitle {
-  font-size: clamp(2rem, 5vw, 3.25rem);
+  margin: 1.5rem 0 1.25rem;
+  font-family: inherit;
+  font-size: clamp(3.25rem, 7vw, 6.6rem);
   font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  line-height: 0.94;
+  letter-spacing: -0.065em;
   color: rgb(var(--c-on-surface));
-  margin: 0 0 1.25rem;
+  text-wrap: balance;
 }
 
-.articleTitle {
-  font-size: clamp(2rem, 4.5vw, 2.75rem);
-  margin-bottom: 0.75rem;
+.title span {
+  background: linear-gradient(110deg, rgb(var(--c-primary)), rgb(var(--c-secondary)) 70%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .subtitle {
-  font-size: 1.125rem;
-  line-height: 1.65;
+  max-width: 42rem;
+  margin: 0;
   color: rgb(var(--c-on-sv));
-  max-width: 36rem;
+  font-size: 1.08rem;
+  line-height: 1.75;
+  text-wrap: pretty;
 }
 
-/* --------------------------------------------------------------- Grid + card */
+.heroPanel {
+  position: relative;
+  display: flex;
+  min-height: 27rem;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 2rem;
+  background:
+    radial-gradient(circle at 80% 12%, rgb(var(--c-secondary) / 0.25), transparent 34%) padding-box,
+    linear-gradient(145deg, rgb(var(--c-sc) / 0.94), rgb(var(--c-sc-lowest) / 0.98)) padding-box,
+    linear-gradient(145deg, rgb(var(--c-primary) / 0.38), rgb(var(--c-secondary) / 0.25)) border-box;
+  box-shadow: 0 28px 70px rgb(var(--c-sc-lowest) / 0.44), inset 0 1px 0 rgb(var(--c-on-surface) / 0.07);
+}
 
-.cardGrid {
+.heroPanel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.16;
+  background-image:
+    linear-gradient(rgb(var(--c-outline-v) / 0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--c-outline-v) / 0.5) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: linear-gradient(to bottom, black, transparent 75%);
+}
+
+.panelTop,
+.panelFooter {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+  color: rgb(var(--c-on-sv));
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.panelTop {
+  border-bottom: 1px solid rgb(var(--c-outline-v) / 0.34);
+}
+
+.panelTop span,
+.panelFooter span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.panelBody {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2rem;
+}
+
+.panelPulse {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+  width: 4.5rem;
+  height: 4.5rem;
+  margin-bottom: 1.5rem;
+  place-items: center;
+  border: 1px solid rgb(var(--c-primary) / 0.3);
+  border-radius: 1.25rem;
+  color: rgb(var(--c-primary));
+  background: rgb(var(--c-primary) / 0.08);
+  box-shadow: 0 0 40px rgb(var(--c-primary) / 0.12);
+}
+
+.panelBody p {
+  margin: 0;
+  color: rgb(var(--c-on-surface));
+  font-size: clamp(1.6rem, 3vw, 2.25rem);
+  font-weight: 650;
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+
+.panelFooter {
+  border-top: 1px solid rgb(var(--c-outline-v) / 0.34);
+}
+
+/* Stories */
+.stories {
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
 }
 
-.card {
+.sectionHeading {
   display: flex;
-  flex-direction: column;
-  padding: 2rem;
-  background: rgb(var(--c-sc) / 0.5);
-  border: 1px solid rgb(var(--c-surface-bright) / 0.18);
-  border-radius: 1rem;
-  text-decoration: none;
-  transition: transform 200ms ease, border-color 200ms ease, background 200ms ease;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 0.5rem;
 }
 
-.card:hover {
-  transform: translateY(-4px);
-  border-color: rgb(var(--c-sec-ctr) / 0.4);
-  background: rgb(var(--c-sc) / 0.75);
+.sectionHeading h2 {
+  margin: 0.45rem 0 0;
+  color: rgb(var(--c-on-surface));
+  font-size: clamp(2rem, 4vw, 3.15rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.issueCount {
+  padding-bottom: 0.3rem;
+  color: rgb(var(--c-outline));
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.featuredCard {
+  display: block;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 2rem;
+  text-decoration: none;
+  background:
+    linear-gradient(145deg, rgb(var(--c-sc) / 0.94), rgb(var(--c-sc-low) / 0.96)) padding-box,
+    linear-gradient(135deg, rgb(var(--c-primary) / 0.35), rgb(var(--c-secondary) / 0.24), rgb(var(--c-tertiary) / 0.2)) border-box;
+  box-shadow: 0 26px 66px rgb(var(--c-sc-lowest) / 0.32);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 300ms ease;
+}
+
+.featuredCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 34px 80px rgb(var(--c-sc-lowest) / 0.42), 0 0 34px rgb(var(--c-primary) / 0.07);
+}
+
+.featuredContent {
+  display: flex;
+  min-height: 27rem;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(2rem, 5vw, 4rem);
+}
+
+.featuredLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: fit-content;
+  margin-bottom: 1.4rem;
+  color: rgb(var(--c-secondary));
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
 .cardMeta {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
-  font-size: 0.8125rem;
-  color: rgb(var(--c-outline));
   margin-bottom: 1rem;
+  color: rgb(var(--c-outline));
+  font-size: 0.78rem;
 }
 
-.dot { opacity: 0.5; }
+.dot { opacity: 0.55; }
 
+.featuredTitle,
 .cardTitle {
-  font-size: 1.375rem;
-  font-weight: 600;
-  line-height: 1.3;
-  margin: 0 0 0.75rem;
+  margin: 0;
   color: rgb(var(--c-on-surface));
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
 }
 
-.cardExcerpt {
-  font-size: 0.9375rem;
-  line-height: 1.6;
+.featuredTitle {
+  max-width: 54rem;
+  font-size: clamp(2rem, 4vw, 3.1rem);
+  line-height: 1.04;
+}
+
+.featuredExcerpt,
+.cardExcerpt,
+.articleLead {
   color: rgb(var(--c-on-sv));
-  margin: 0 0 1.5rem;
-  flex: 1;
+  line-height: 1.72;
+  text-wrap: pretty;
+}
+
+.featuredExcerpt {
+  max-width: 48rem;
+  margin: 1.25rem 0 1.5rem;
+  font-size: 1rem;
 }
 
 .tagRow {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  margin: 0 0 1.5rem;
 }
 
 .tag {
-  display: inline-block;
-  padding: 0.25rem 0.625rem;
-  background: rgb(var(--c-sec-ctr) / 0.12);
-  border: 1px solid rgb(var(--c-sec-ctr) / 0.25);
-  border-radius: 0.375rem;
-  font-size: 0.75rem;
-  font-weight: 500;
+  display: inline-flex;
+  padding: 0.34rem 0.68rem;
+  border: 1px solid rgb(var(--c-secondary) / 0.22);
+  border-radius: 999px;
   color: rgb(var(--c-on-sec-ctr));
+  background: rgb(var(--c-sec-ctr) / 0.1);
+  font-size: 0.7rem;
+  font-weight: 650;
 }
 
-/* Footer of the card: CTA on the LEFT, author badge on the RIGHT end. */
+.featuredFooter,
 .cardFooter {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* pushes author badge to the right end */
+  justify-content: space-between;
   gap: 1rem;
-  margin-top: auto; /* stick to the bottom of the flex card */
-  padding-top: 1rem;
-  border-top: 1px solid rgb(var(--c-surface-bright) / 0.18);
 }
 
+.featuredFooter {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgb(var(--c-outline-v) / 0.34);
+}
+
+.featuredCta,
 .cardCta {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: rgb(var(--c-secondary));
+  color: rgb(var(--c-primary));
+  font-size: 0.84rem;
+  font-weight: 650;
+  white-space: nowrap;
 }
 
-.cardCta .material-symbols-outlined {
-  font-size: 1.125rem;
-  transition: transform 200ms ease;
+.featuredCta svg,
+.cardCta svg {
+  transition: transform 180ms ease;
 }
 
-.card:hover .cardCta .material-symbols-outlined {
+.featuredCard:hover .featuredCta svg,
+.card:hover .cardCta svg {
   transform: translateX(4px);
 }
 
-/* Container that wraps the AuthorBadge at the right end of the card footer. */
-.cardAuthor {
-  display: inline-flex;
-  align-items: center;
-  max-width: 60%;
-  min-width: 0;
-}
-/* The AuthorBadge component itself controls its avatar + name typography,
- * so we no longer need the violet dot prefix it used to carry. */
-
-/* ----------------------------------------------------------------- Empty */
-
-.emptyState {
-  text-align: center;
-  padding: 4rem 1.5rem;
-  border: 1px dashed rgb(var(--c-surface-bright) / 0.3);
-  border-radius: 1rem;
-  background: rgb(var(--c-sc) / 0.4);
-}
-
-.emptyTitle {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: rgb(var(--c-on-surface));
-  margin: 0 0 0.5rem;
-}
-
-.emptyBody {
-  font-size: 0.9375rem;
-  line-height: 1.6;
-  color: rgb(var(--c-on-sv));
-  margin: 0;
-}
-
-.emptyBody code {
-  font-family: JetBrains Mono, Fira Code, monospace;
-  font-size: 0.8125rem;
-  padding: 0.125rem 0.375rem;
-  background: rgb(var(--c-sec-ctr) / 0.12);
-  border-radius: 0.25rem;
-  color: rgb(var(--c-on-sec-ctr));
-}
-
-/* ------------------------------------------------------------ Post body */
-
-.body {
-  display: flex;
-  flex-direction: column;
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
   gap: 1.25rem;
+  margin-top: 0.25rem;
 }
 
-.p {
-  font-size: 1.0625rem;
-  line-height: 1.75;
-  color: rgb(var(--c-on-sv));
-  margin: 0;
-}
-
-.h2 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-  color: rgb(var(--c-on-surface));
-  margin: 2.5rem 0 0.25rem;
-}
-
-.h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: rgb(var(--c-on-surface));
-  margin: 1.5rem 0 0;
-}
-
-.quote {
-  margin: 0.5rem 0;
-  padding: 1rem 1.5rem;
-  border-left: 3px solid rgb(var(--c-secondary));
-  background: rgb(var(--c-sec-ctr) / 0.06);
-  border-radius: 0 0.5rem 0.5rem 0;
-  font-size: 1.125rem;
-  font-style: italic;
-  color: rgb(var(--c-on-surface));
-}
-
-.list {
-  padding-left: 1.5rem;
-  margin: 0.25rem 0;
+.card {
   display: flex;
+  min-height: 25rem;
   flex-direction: column;
-  gap: 0.5rem;
-  color: rgb(var(--c-on-sv));
-  line-height: 1.7;
+  padding: 1.5rem;
+  border: 1px solid transparent;
+  border-radius: 1.5rem;
+  text-decoration: none;
+  background:
+    linear-gradient(145deg, rgb(var(--c-sc) / 0.93), rgb(var(--c-sc-lowest) / 0.96)) padding-box,
+    linear-gradient(145deg, rgb(var(--c-primary) / 0.25), rgb(var(--c-secondary) / 0.17)) border-box;
 }
 
-.list li::marker { color: rgb(var(--c-secondary)); }
-
-.codeWrap {
-  position: relative;
-  margin: 0.75rem 0;
-  background: rgb(var(--c-sc-lowest) / 0.6);
-  border: 1px solid rgb(var(--c-surface-bright) / 0.18);
-  border-radius: 0.75rem;
-  overflow: hidden;
+.cardVisual {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 7rem;
+  margin-bottom: 1.5rem;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  color: rgb(var(--c-primary));
+  background:
+    radial-gradient(circle at 80% 20%, rgb(var(--c-secondary) / 0.2), transparent 36%),
+    rgb(var(--c-sc-lowest) / 0.65);
 }
 
-.codeLang {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.75rem;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+.cardIndex {
   color: rgb(var(--c-outline));
+  font-family: ui-monospace, monospace;
+  font-size: 0.72rem;
 }
 
-.codeBlock {
-  margin: 0;
-  padding: 1.25rem 1.5rem;
-  overflow-x: auto;
-  font-family: JetBrains Mono, Fira Code, monospace;
-  font-size: 0.875rem;
-  line-height: 1.65;
-  color: rgb(var(--c-on-surface));
-  white-space: pre;
+.cardTitle { font-size: 1.45rem; line-height: 1.16; }
+.cardExcerpt { flex: 1; margin: 0.8rem 0 1.25rem; font-size: 0.91rem; }
+.cardFooter { padding-top: 1rem; border-top: 1px solid rgb(var(--c-outline-v) / 0.34); }
+
+/* Empty state */
+.emptyState {
+  padding: 5rem 2rem;
+  border: 1px dashed rgb(var(--c-outline-v) / 0.7);
+  border-radius: 2rem;
+  text-align: center;
+  background: rgb(var(--c-sc) / 0.5);
 }
 
-.codeBlock code {
-  font: inherit;
-  color: inherit;
-}
+.emptyTitle { margin: 0 0 0.5rem; color: rgb(var(--c-on-surface)); font-size: 1.3rem; font-weight: 700; }
+.emptyBody { margin: 0; color: rgb(var(--c-on-sv)); }
+.emptyBody code { padding: 0.15rem 0.35rem; border-radius: 0.3rem; color: rgb(var(--c-primary)); background: rgb(var(--c-primary) / 0.08); }
 
-/* Inline code (e.g. `var`) inside a paragraph. */
-.inlineCode {
-  font-family: JetBrains Mono, Fira Code, monospace;
-  font-size: 0.9375rem;
-  padding: 0.125rem 0.375rem;
-  background: rgb(var(--c-sec-ctr) / 0.12);
-  border-radius: 0.25rem;
-  color: rgb(var(--c-on-sec-ctr));
-}
-
-/* Inline link inside markdown body. */
-.link {
-  color: rgb(var(--c-secondary));
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.link:hover { opacity: 0.8; }
-
-/* ------------------------------------------------------------ Article misc */
+/* Article */
+.articleInner { max-width: 72rem; }
 
 .backLink {
   display: inline-flex;
   align-items: center;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: rgb(var(--c-secondary));
-  text-decoration: none;
-  margin-bottom: 2rem;
-  transition: opacity 200ms ease;
-}
-
-.backLink:hover { opacity: 0.8; }
-
-.authorLine {
-  display: flex;
-  align-items: center;
   gap: 0.5rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 2rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid rgb(var(--c-outline-v) / 0.5);
+  border-radius: 999px;
+  color: rgb(var(--c-on-sv));
+  background: rgb(var(--c-sc) / 0.5);
+  font-size: 0.78rem;
+  font-weight: 650;
+  text-decoration: none;
+  transition: color 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
-/* AuthorBadge carries its own name + role typography; this wrapper just
- * gives it breathing room above the tag row. */
+
+.backLink:hover { color: rgb(var(--c-primary)); border-color: rgb(var(--c-primary) / 0.4); transform: translateX(-3px); }
+
+.articleHeader {
+  margin-bottom: 4rem;
+  padding: clamp(2rem, 6vw, 5rem);
+  border: 1px solid transparent;
+  border-radius: 2rem;
+  background:
+    radial-gradient(circle at 90% 0%, rgb(var(--c-secondary) / 0.18), transparent 35%) padding-box,
+    linear-gradient(145deg, rgb(var(--c-sc) / 0.94), rgb(var(--c-sc-lowest) / 0.97)) padding-box,
+    linear-gradient(135deg, rgb(var(--c-primary) / 0.3), rgb(var(--c-secondary) / 0.22)) border-box;
+  box-shadow: 0 26px 70px rgb(var(--c-sc-lowest) / 0.3);
+}
+
+.articleEyebrow { margin-bottom: 1.5rem; }
+
+.articleTitle {
+  max-width: 58rem;
+  margin: 1.2rem 0 1.5rem;
+  font-size: clamp(2.7rem, 6vw, 5rem);
+}
+
+.articleLead {
+  max-width: 47rem;
+  margin: 0 0 2rem;
+  font-size: 1.12rem;
+}
+
+.articleHeaderFooter {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgb(var(--c-outline-v) / 0.38);
+}
+
+.authorLine { display: flex; }
+.articleHeaderFooter .tagRow { justify-content: flex-end; margin: 0; }
+
+.articleLayout {
+  display: grid;
+  grid-template-columns: 12rem minmax(0, 44rem);
+  justify-content: center;
+  gap: clamp(2rem, 6vw, 5rem);
+}
+
+.articleRail {
+  position: sticky;
+  top: 7rem;
+  display: flex;
+  height: fit-content;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-top: 0.5rem;
+}
+
+.articleRail span {
+  color: rgb(var(--c-outline));
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.articleRail strong {
+  color: rgb(var(--c-on-surface));
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.railLine {
+  height: 1px;
+  margin: 1rem 0;
+  background: linear-gradient(90deg, rgb(var(--c-primary) / 0.55), transparent);
+}
+
+.body {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+
+.p {
+  margin: 0;
+  color: rgb(var(--c-on-sv));
+  font-size: 1.07rem;
+  line-height: 1.82;
+}
+
+.h2,
+.h3 {
+  color: rgb(var(--c-on-surface));
+  letter-spacing: -0.035em;
+}
+
+.h2 { margin: 2.7rem 0 0.2rem; font-size: 2rem; line-height: 1.15; }
+.h3 { margin: 1.6rem 0 0; font-size: 1.35rem; }
+
+.quote {
+  margin: 0.75rem 0;
+  padding: 1.5rem 1.75rem;
+  border: 1px solid rgb(var(--c-secondary) / 0.2);
+  border-left: 3px solid rgb(var(--c-secondary));
+  border-radius: 0 1rem 1rem 0;
+  color: rgb(var(--c-on-surface));
+  background: rgb(var(--c-secondary) / 0.06);
+  font-size: 1.08rem;
+  font-style: italic;
+  line-height: 1.7;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin: 0.25rem 0;
+  padding-left: 1.5rem;
+  color: rgb(var(--c-on-sv));
+  line-height: 1.75;
+}
+
+.list li::marker { color: rgb(var(--c-primary)); }
+
+.codeWrap {
+  position: relative;
+  overflow: hidden;
+  margin: 1rem 0;
+  border: 1px solid rgb(var(--c-outline-v) / 0.55);
+  border-radius: 1rem;
+  background: rgb(var(--c-sc-lowest) / 0.88);
+  box-shadow: 0 16px 40px rgb(var(--c-sc-lowest) / 0.25);
+}
+
+.codeWrap::before {
+  content: '●  ●  ●';
+  display: block;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgb(var(--c-outline-v) / 0.42);
+  color: rgb(var(--c-outline-v));
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+}
+
+.codeLang {
+  position: absolute;
+  top: 0.7rem;
+  right: 1rem;
+  color: rgb(var(--c-outline));
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.codeBlock {
+  overflow-x: auto;
+  margin: 0;
+  padding: 1.35rem 1.5rem;
+  color: rgb(var(--c-primary));
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.84rem;
+  line-height: 1.7;
+  white-space: pre;
+}
+
+.codeBlock code { color: inherit; font: inherit; }
+.inlineCode { padding: 0.14rem 0.35rem; border-radius: 0.3rem; color: rgb(var(--c-primary)); background: rgb(var(--c-primary) / 0.09); font-family: ui-monospace, monospace; font-size: 0.9em; }
+.link { color: rgb(var(--c-primary)); text-decoration: underline; text-decoration-color: rgb(var(--c-primary) / 0.35); text-underline-offset: 3px; }
+.link:hover { text-decoration-color: currentColor; }
 
 .articleFooter {
-  margin-top: 4rem;
-  padding-top: 2.5rem;
-  border-top: 1px solid rgb(var(--c-surface-bright) / 0.2);
   display: flex;
   justify-content: center;
+  max-width: 44rem;
+  margin: 5rem auto 0;
+  padding-top: 2.5rem;
+  border-top: 1px solid rgb(var(--c-outline-v) / 0.4);
 }
 
 .footerCta {
   display: inline-flex;
   align-items: center;
-  gap: 0.625rem;
-  padding: 0.875rem 1.5rem;
-  background: linear-gradient(135deg, rgb(var(--c-sec-ctr)) 0%, rgb(var(--c-inv-primary)) 100%);
-  border-radius: 0.625rem;
-  font-size: 0.9375rem;
-  font-weight: 600;
+  gap: 0.65rem;
+  padding: 0.9rem 1.4rem;
+  border-radius: 999px;
   color: rgb(var(--c-on-primary));
+  background: linear-gradient(120deg, rgb(var(--c-primary)), rgb(var(--c-inv-primary)));
+  font-size: 0.9rem;
+  font-weight: 700;
   text-decoration: none;
-  transition: transform 200ms ease, box-shadow 200ms ease;
+  transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
-.footerCta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgb(var(--c-sec-ctr) / 0.35);
-}
-
-.footerCta .material-symbols-outlined { font-size: 1.25rem; }
-
-/* ------------------------------------------------------------- Reveal */
+.footerCta:hover { transform: translateY(-3px); box-shadow: 0 14px 34px rgb(var(--c-primary) / 0.18); }
 
 .reveal {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 600ms ease, transform 600ms ease;
+  transform: translateY(28px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--delay, 0ms);
 }
 
-.inView {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* -------------------------------------------------------------- Responsive */
-
-@media (max-width: 640px) {
-  .page { padding: 4rem 1rem 6rem; }
-  .cardGrid { grid-template-columns: 1fr; }
-  .articleInner { max-width: 100%; }
-  .cardFooter { flex-wrap: wrap; }
-  .cardAuthor { max-width: 100%; }
-  .authorLine { margin-bottom: 1rem; }
-}
-
-/* ========================================================================
-   Light-mode overrides.
-   `data-theme="light"` is toggled on <html> by ThemeContext. The selectors
-   below match any descendant of <html data-theme="light"> with our scoped
-   classnames — works because CSS-modules scopes the CLASSNAMES, not the
-   parent selectors that reference them.
-   ======================================================================== */
+.inView { opacity: 1; transform: none; }
 
 [data-theme="light"] .page {
-  /* Diagonal hero: paper-white fading to a soft surface tint */
-  background: linear-gradient(180deg, rgb(var(--c-sc-lowest)) 0%, rgb(var(--c-surface-dim)) 100%);
+  background:
+    linear-gradient(rgb(var(--c-bg) / 0.72), rgb(var(--c-bg) / 0.98)),
+    radial-gradient(circle at 50% -20%, rgb(var(--c-primary) / 0.14), transparent 46%);
 }
 
-[data-theme="light"] .card {
-  background: rgb(var(--c-sc-lowest) / 0.85);
-  border-color: rgb(var(--c-outline-v) / 0.7);
+[data-theme="light"] .heroPanel,
+[data-theme="light"] .featuredCard,
+[data-theme="light"] .card,
+[data-theme="light"] .articleHeader {
+  box-shadow: 0 24px 64px rgba(22, 33, 48, 0.11), inset 0 1px 0 rgba(255, 255, 255, 0.94);
 }
 
-[data-theme="light"] .card:hover {
-  background: rgb(var(--c-sc-lowest));
-  border-color: rgb(var(--c-secondary) / 0.4);
+[data-theme="light"] .subtitle,
+[data-theme="light"] .featuredExcerpt,
+[data-theme="light"] .cardExcerpt,
+[data-theme="light"] .articleLead,
+[data-theme="light"] .p,
+[data-theme="light"] .list {
+  color: rgba(43, 47, 55, 0.88);
 }
 
-[data-theme="light"] .cardFooter {
-  border-top-color: rgb(var(--c-outline-v) / 0.7);
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; margin-bottom: 4rem; }
+  .heroCopy { min-height: auto; padding-top: 1rem; }
+  .heroPanel { min-height: 22rem; }
+  .articleLayout { grid-template-columns: 1fr; }
+  .articleRail { position: static; display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem 1.5rem; padding: 1rem 0; border-block: 1px solid rgb(var(--c-outline-v) / 0.38); }
+  .railLine { display: none; }
 }
 
-[data-theme="light"] .emptyState {
-  background: rgb(var(--c-sc-lowest) / 0.6);
-  border-color: rgb(var(--c-outline-v) / 0.7);
+@media (max-width: 640px) {
+  .page { padding: 3.5rem 1rem 6rem; }
+  .hero { gap: 1rem; }
+  .title { font-size: clamp(3rem, 17vw, 4.7rem); }
+  .heroPanel, .featuredCard, .articleHeader { border-radius: 1.4rem; }
+  .panelFooter { align-items: flex-start; flex-direction: column; }
+  .sectionHeading { align-items: flex-start; flex-direction: column; gap: 0.75rem; }
+  .featuredContent { padding: 1.5rem; }
+  .featuredFooter, .articleHeaderFooter { align-items: flex-start; flex-direction: column; }
+  .featuredCta { margin-top: 0.5rem; }
+  .cardGrid { grid-template-columns: 1fr; }
+  .articleHeader { margin-bottom: 2.5rem; padding: 1.5rem; }
+  .articleTitle { font-size: clamp(2.35rem, 13vw, 3.5rem); }
+  .articleHeaderFooter .tagRow { justify-content: flex-start; }
 }
 
-[data-theme="light"] .codeWrap {
-  background: rgb(var(--c-surface-dim) / 0.85);
-  border-color: rgb(var(--c-outline-v) / 0.7);
-}
-
-[data-theme="light"] .articleFooter {
-  border-top-color: rgb(var(--c-outline-v) / 0.7);
-}
-
-[data-theme="light"] .footerCta {
-  /* Same brand gradient — its colors already work on white because the
-   * c-on-primary token is white in light mode. */
-  background: linear-gradient(135deg, rgb(var(--c-secondary)) 0%, rgb(var(--c-inv-primary)) 100%);
-  color: rgb(var(--c-on-primary));
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .featuredCard, .backLink, .footerCta { transition: none; }
 }

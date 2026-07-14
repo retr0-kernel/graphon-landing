@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import Nav from './components/navbar';
 import Footer from './components/footer';
 import ShaderCanvas from './components/shader-canvas';
+import ErrorBoundary from './components/error-boundary';
 import Home from './pages/home';
 import Features from './pages/features';
 import Architecture from './pages/architecture';
@@ -10,6 +11,7 @@ import Pricing from './pages/pricing';
 import Docs from './pages/docs';
 import Blog from './pages/blog';
 import ContactUs from './pages/contact-us/index';
+import NotFound from './pages/not-found';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -36,14 +38,15 @@ export default function App() {
         <Nav />
         <main className="flex-1">
           <Routes>
-            <Route path="/"             element={<Home />} />
-            <Route path="/features"     element={<Features />} />
-            <Route path="/architecture" element={<Architecture />} />
-            <Route path="/pricing"      element={<Pricing />} />
-            <Route path="/docs"         element={<Docs />} />
-            <Route path="/blog"         element={<Blog />} />
-            <Route path="/blog/:slug"   element={<Blog />} />
-            <Route path="/contact-us"   element={<ContactUs />} />
+            <Route path="/"             element={<ErrorBoundary><Home /></ErrorBoundary>} />
+            <Route path="/features"     element={<ErrorBoundary><Features /></ErrorBoundary>} />
+            <Route path="/architecture" element={<ErrorBoundary><Architecture /></ErrorBoundary>} />
+            <Route path="/pricing"      element={<ErrorBoundary><Pricing /></ErrorBoundary>} />
+            <Route path="/docs"         element={<ErrorBoundary><Docs /></ErrorBoundary>} />
+            <Route path="/blog"         element={<ErrorBoundary><Blog /></ErrorBoundary>} />
+            <Route path="/blog/:slug"   element={<ErrorBoundary><Blog /></ErrorBoundary>} />
+            <Route path="/contact-us"   element={<ErrorBoundary><ContactUs /></ErrorBoundary>} />
+            <Route path="*"             element={<NotFound />} />
           </Routes>
         </main>
         <Footer />

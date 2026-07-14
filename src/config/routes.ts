@@ -12,6 +12,7 @@ export const ROUTES = {
   docs:         '/docs',
   blog:         '/blog',
   contactUs:    '/contact-us',
+  notFound:     '/404',
 } as const;
 
 export const NAV_LINKS: readonly NavRoute[] = [

@@ -1,0 +1,39 @@
+.wrapper {
+  @apply flex items-center justify-center w-full px-6 py-16;
+}
+
+.inner {
+  @apply flex flex-col items-center gap-4 text-center max-w-sm;
+}
+
+.iconWrap {
+  @apply flex items-center justify-center rounded-full w-14 h-14;
+  background: rgb(var(--c-error, 255 82 82) / 0.12);
+}
+
+.icon {
+  @apply w-7 h-7;
+  color: rgb(var(--c-error, 255 82 82) / 0.85);
+}
+
+.heading {
+  @apply font-display text-headline-md font-bold text-on-surface cursor-default;
+  letter-spacing: -0.03em;
+}
+
+.message {
+  @apply text-body-sm text-on-surface-variant cursor-default;
+  line-height: 1.65;
+}
+
+.resetBtn {
+  @apply flex items-center gap-2 rounded-full border border-outline-variant/40 px-5 py-2
+         text-body-sm font-medium text-on-surface-variant transition-all duration-150
+         hover:border-primary/50 hover:bg-primary/10 hover:text-on-surface;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resetBtn {
+    transition: none;
+  }
+}

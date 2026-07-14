@@ -1,0 +1,99 @@
+.page {
+  @apply relative flex items-center justify-center overflow-hidden px-6 py-24 md:py-36 min-h-[70vh];
+}
+
+.orbOne,
+.orbTwo {
+  @apply pointer-events-none absolute rounded-full blur-3xl;
+}
+
+.orbOne {
+  @apply -top-32 right-[-6rem] h-96 w-96;
+  background: radial-gradient(circle, rgb(var(--c-primary) / 0.2), transparent 65%);
+}
+
+.orbTwo {
+  @apply bottom-8 left-[-8rem] h-80 w-80;
+  background: radial-gradient(circle, rgb(var(--c-secondary) / 0.16), transparent 68%);
+}
+
+.inner {
+  @apply relative z-10 flex flex-col items-center gap-8 text-center;
+}
+
+.code {
+  @apply font-display font-black text-on-surface select-none;
+  font-size: clamp(7rem, 22vw, 14rem);
+  letter-spacing: -0.06em;
+  line-height: 1;
+  background: linear-gradient(
+    135deg,
+    rgb(var(--c-on-surface) / 0.08),
+    rgb(var(--c-primary) / 0.22) 50%,
+    rgb(var(--c-secondary) / 0.14)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.copy {
+  @apply flex flex-col items-center gap-3 max-w-lg;
+}
+
+.eyebrow {
+  @apply text-label-caps font-semibold uppercase tracking-[0.22em] text-on-surface-variant cursor-default;
+}
+
+.title {
+  @apply font-display text-headline-lg font-bold text-on-surface cursor-default;
+  letter-spacing: -0.05em;
+  line-height: 1.06;
+  background: linear-gradient(
+    135deg,
+    rgb(var(--c-on-surface)),
+    rgb(var(--c-primary)) 55%,
+    rgb(var(--c-secondary))
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  @apply mt-1 text-body-lg text-on-surface-variant cursor-default;
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+
+.actions {
+  @apply flex flex-wrap items-center justify-center gap-3;
+}
+
+.primaryBtn {
+  @apply inline-flex items-center gap-2 rounded-full px-6 py-3
+         text-body-sm font-semibold text-on-primary transition-all duration-200;
+  background: rgb(var(--c-primary));
+}
+
+.primaryBtn:hover {
+  background: rgb(var(--c-primary) / 0.86);
+  transform: translateY(-1px);
+}
+
+.ghostBtn {
+  @apply inline-flex items-center gap-2 rounded-full border border-outline-variant/40 px-6 py-3
+         text-body-sm font-semibold text-on-surface-variant transition-all duration-200
+         hover:border-primary/50 hover:bg-primary/10 hover:text-on-surface;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primaryBtn,
+  .ghostBtn {
+    transition: none;
+  }
+
+  .primaryBtn:hover {
+    transform: none;
+  }
+}
