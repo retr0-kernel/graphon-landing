@@ -71,6 +71,8 @@ interface Frontmatter {
   avatar?: string;
   tags?: string[];
   draft?: boolean;
+  /** Override the auto-calculated reading time (minutes). */
+  reading_minutes?: number;
 }
 
 const DEFAULT_AUTHOR = 'Krish Srivastava';
@@ -122,6 +124,11 @@ function parseFrontmatter(block: string): Frontmatter {
       case 'draft':
         fm.draft = /^(true|yes|1)$/i.test(valueRaw);
         break;
+      case 'reading_minutes': {
+        const n = parseInt(valueRaw, 10);
+        if (!isNaN(n) && n > 0) fm.reading_minutes = n;
+        break;
+      }
     }
   }
   return fm;
@@ -344,7 +351,7 @@ export const POSTS: BlogPost[] = (() => {
       avatarUrl,
       avatarInitials,
       tags,
-      readingMinutes: readingMinutes(body),
+      readingMinutes: fm.reading_minutes != null ? Number(fm.reading_minutes) : readingMinutes(body),
       body: blocks,
     });
   }

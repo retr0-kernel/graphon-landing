@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, BookOpen, Clock3, Network, Radio, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
 import styles from './styles.module.css';
 import { POSTS, POSTS_BY_SLUG, type BlogPost, type BlogBlock } from '../../content/blog/loader';
 import { useInView } from '../../hooks/useInView';
@@ -123,10 +123,6 @@ function PostCard({ post, index }: { post: BlogPost; index: number }) {
       to={`${ROUTES.blog}/${post.slug}`}
       className={`${styles.card} glow-card`}
     >
-      <div className={styles.cardVisual} aria-hidden="true">
-        <span className={styles.cardIndex}>{String(index + 2).padStart(2, '0')}</span>
-        <Network size={28} />
-      </div>
       <div className={styles.cardMeta}>
         <time dateTime={post.date}>{formatDate(post.date)}</time>
         <span className={styles.dot}>&middot;</span>
@@ -210,28 +206,13 @@ function PostIndex() {
               Graphon engineering journal
             </div>
             <h1 className={styles.title}>
-              Notes from inside<br />
-              <span>the runtime.</span>
+              Notes from inside <span>the runtime.</span>
             </h1>
             <p className={styles.subtitle}>
-              Practical deep dives on eBPF, Kubernetes, and the engineering behind a dependency
-              graph that never stops moving.
+              Engineering notes on performance, observability, and the tradeoffs we hit building production software.
             </p>
           </div>
 
-          <div className={styles.heroPanel} aria-hidden="true">
-            <div className={styles.panelTop}>
-              <span><Radio size={15} /> graphon / journal</span>
-            </div>
-            <div className={styles.panelBody}>
-              <div className={styles.panelPulse}><Network size={34} /></div>
-              <p>Tracing the systems<br />behind your systems.</p>
-            </div>
-            <div className={styles.panelFooter}>
-              <span><BookOpen size={14} /> {POSTS.length} {POSTS.length === 1 ? 'story' : 'stories'}</span>
-              <span><Clock3 size={14} /> Built for engineers</span>
-            </div>
-          </div>
         </header>
 
         {POSTS.length === 0 ? (

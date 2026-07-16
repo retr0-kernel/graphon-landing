@@ -11,6 +11,7 @@
  */
 
 import krishAvatar from '../../assets/images/photo2.webp';
+import aryanAvatar from '../../assets/images/photo1.webp';
 
 export interface AuthorAvatar {
   /** Vite-hashed URL the browser can `src=` directly. */
@@ -25,7 +26,8 @@ export interface AuthorAvatar {
  */
 const AVATARS: Record<string, AuthorAvatar> = {
   'assets/images/photo2.jpeg': { url: krishAvatar, initials: 'KS' },
-  'assets/images/photo1.jpeg': { url: krishAvatar, initials: 'KS' },
+  'assets/images/photo1.jpeg': { url: aryanAvatar, initials: 'AR' },
+  'assets/images/photo1.webp': { url: aryanAvatar, initials: 'AR' },
 };
 
 /**
