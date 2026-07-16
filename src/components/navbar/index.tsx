@@ -4,7 +4,7 @@ import { type LucideIcon, Moon, Sun, Monitor, Menu, X } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 import { useTheme, type ThemePreference } from '../../context/ThemeContext';
 import styles from './styles.module.css';
-import graphonImg from '../../assets/images/graphon.png';
+import graphonImg from '../../assets/images/graphon.webp';
 import { NAV_LINKS } from '../../config/routes';
 import { GITHUB_URL } from '../../config/externalLinks';
 

@@ -10,7 +10,7 @@
  * entry to `AVATARS` below. The loader picks it up automatically.
  */
 
-import krishAvatar from '../../assets/images/photo2.jpeg';
+import krishAvatar from '../../assets/images/photo2.webp';
 
 export interface AuthorAvatar {
   /** Vite-hashed URL the browser can `src=` directly. */

@@ -4,8 +4,8 @@ import styles from './styles.module.css';
 import { EVENTS_LINES, COMPONENTS, TIMELINE, SCHEMA_TABLES } from './data';
 import { useInView } from '../../hooks/useInView';
 import { useTheme } from '../../context/ThemeContext';
-import architectureImgDark from '../../assets/images/architecture.png';
-import architectureImgLight from '../../assets/images/architecture_light.png';
+import architectureImgDark from '../../assets/images/architecture.webp';
+import architectureImgLight from '../../assets/images/architecture_light.webp';
 
 export default function Architecture() {
   const { ref: headerRef,     visible: headerVisible     } = useInView<HTMLDivElement>();

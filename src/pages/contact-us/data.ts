@@ -1,5 +1,5 @@
-import devOneImage from '../../assets/images/photo2.jpeg';
-import devTwoImage from '../../assets/images/photo1.jpeg';
+import devOneImage from '../../assets/images/photo2.webp';
+import devTwoImage from '../../assets/images/photo1.webp';
 
 export interface DeveloperContact {
   name: string;

@@ -73,4 +73,15 @@ export default defineConfig(({ mode }) => ({
   ],
   // HashRouter handles routing without a server — works on GitHub Pages, Netlify, any static host
   base: './',
+  build: {
+    rollupOptions: {
+      output: {
+        // Split rarely-changing framework code into its own long-cached chunk,
+        // so app-code deploys don't invalidate the (large) React/router bundle.
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+        },
+      },
+    },
+  },
 }));

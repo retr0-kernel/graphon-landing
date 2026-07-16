@@ -3,7 +3,7 @@ import styles from './styles.module.css';
 import { NAV_LINKS, ROUTES } from '../../config/routes';
 import { BOTTOM_LINKS, GITHUB_URL } from '../../config/externalLinks';
 import { CONTACT_PAGE_DATA, getGmailComposeUrl } from '../../pages/contact-us/data';
-import graphonLogo from '../../assets/images/graphon.png';
+import graphonLogo from '../../assets/images/graphon.webp';
 import GitHubIcon from '../../assets/icons/GitHubIcon';
 
 export default function Footer() {
