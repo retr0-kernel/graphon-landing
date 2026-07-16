@@ -179,6 +179,17 @@ export default function Docs() {
     <div className={styles.page}>
       <div className={styles.layout}>
 
+        {/* Header */}
+        <header className={styles.pageHeader}>
+          <p className={styles.eyebrow}>Documentation</p>
+          <h1 className={styles.pageTitle}>Graphon Docs</h1>
+          <p className={styles.pageSubtitle}>
+            Everything you need to deploy, configure, and operate Graphon —
+            from a local Kind cluster to a production multi-cluster Enterprise setup.
+          </p>
+        </header>
+
+        <div className={styles.docsBody}>
         {/* ── Sidebar ──────────────────────────────────────────────── */}
         <nav ref={sidebarRef} className={styles.sidebar} aria-label="Documentation navigation">
           <button
@@ -219,16 +230,6 @@ export default function Docs() {
 
         {/* ── Main content ─────────────────────────────────────────── */}
         <article className={styles.content}>
-
-          {/* Header */}
-          <header className={styles.pageHeader}>
-            <p className={styles.eyebrow}>Documentation</p>
-            <h1 className={styles.pageTitle}>Graphon Docs</h1>
-            <p className={styles.pageSubtitle}>
-              Everything you need to deploy, configure, and operate Graphon —
-              from a local Kind cluster to a production multi-cluster Enterprise setup.
-            </p>
-          </header>
 
           {/* ── Getting Started ─────────────────────────────────── */}
           <Section id="getting-started" title="Getting Started">
@@ -783,6 +784,7 @@ export default function Docs() {
           </Section>
 
         </article>
+        </div>
       </div>
     </div>
   );

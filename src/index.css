@@ -69,13 +69,15 @@
 
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  /* `clip` (not `hidden`) prevents horizontal scroll WITHOUT turning the
+     root into a scroll container, which would break `position: sticky`. */
+  overflow-x: clip;
   width: 100%;
 }
 
 body {
   @apply bg-background text-on-surface antialiased font-sans;
-  overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
 }
 
