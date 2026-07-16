@@ -1,17 +1,21 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import Nav from './components/navbar';
 import Footer from './components/footer';
 import ShaderCanvas from './components/shader-canvas';
 import ErrorBoundary from './components/error-boundary';
 import Home from './pages/home';
-import Features from './pages/features';
-import Architecture from './pages/architecture';
-import Pricing from './pages/pricing';
-import Docs from './pages/docs';
-import Blog from './pages/blog';
-import ContactUs from './pages/contact-us/index';
-import NotFound from './pages/not-found';
+
+// Route-level code splitting: each page is fetched only when first visited,
+// keeping the initial bundle (landing page) small. Home stays eager since it
+// is the entry route and should paint immediately without a fallback flash.
+const Features = lazy(() => import('./pages/features'));
+const Architecture = lazy(() => import('./pages/architecture'));
+const Pricing = lazy(() => import('./pages/pricing'));
+const Docs = lazy(() => import('./pages/docs'));
+const Blog = lazy(() => import('./pages/blog'));
+const ContactUs = lazy(() => import('./pages/contact-us/index'));
+const NotFound = lazy(() => import('./pages/not-found'));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -22,6 +26,15 @@ function ScrollToTop() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [pathname]);
   return null;
+}
+
+function RouteFallback() {
+  return (
+    <div className="flex min-h-[60vh] items-center justify-center" aria-busy="true" aria-live="polite">
+      <span className="sr-only">Loading…</span>
+      <span className="h-8 w-8 animate-spin rounded-full border-2 border-outline-variant/40 border-t-primary" />
+    </div>
+  );
 }
 
 export default function App() {
@@ -37,17 +50,21 @@ export default function App() {
       <div className="relative z-10 min-h-screen flex flex-col">
         <Nav />
         <main className="flex-1">
-          <Routes>
-            <Route path="/"             element={<ErrorBoundary><Home /></ErrorBoundary>} />
-            <Route path="/features"     element={<ErrorBoundary><Features /></ErrorBoundary>} />
-            <Route path="/architecture" element={<ErrorBoundary><Architecture /></ErrorBoundary>} />
-            <Route path="/pricing"      element={<ErrorBoundary><Pricing /></ErrorBoundary>} />
-            <Route path="/docs"         element={<ErrorBoundary><Docs /></ErrorBoundary>} />
-            <Route path="/blog"         element={<ErrorBoundary><Blog /></ErrorBoundary>} />
-            <Route path="/blog/:slug"   element={<ErrorBoundary><Blog /></ErrorBoundary>} />
-            <Route path="/contact-us"   element={<ErrorBoundary><ContactUs /></ErrorBoundary>} />
-            <Route path="*"             element={<NotFound />} />
-          </Routes>
+          <ErrorBoundary>
+            <Suspense fallback={<RouteFallback />}>
+              <Routes>
+                <Route path="/"             element={<Home />} />
+                <Route path="/features"     element={<Features />} />
+                <Route path="/architecture" element={<Architecture />} />
+                <Route path="/pricing"      element={<Pricing />} />
+                <Route path="/docs"         element={<Docs />} />
+                <Route path="/blog"         element={<Blog />} />
+                <Route path="/blog/:slug"   element={<Blog />} />
+                <Route path="/contact-us"   element={<ContactUs />} />
+                <Route path="*"             element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
         </main>
         <Footer />
       </div>
