@@ -1,15 +1,15 @@
 ---
 title: "How we stopped dropping connections: the spill buffer story"
-excerpt: "When the eBPF ring keeps producing events but the backend can't take them, you have a choice: drop the batch, or hold it. We chose drop for two years. v0.6.0 fixes it with a crash-safe, fsynced, on-disk FIFO that survives agent restarts, node pressure, and the network partitions that mattered most."
+excerpt: "When the eBPF ring keeps producing events but the backend can't take them, you have a choice: drop the batch, or hold it. We chose drop. v0.6.0 fixes it with a crash-safe, fsynced, on-disk FIFO that survives agent restarts, node pressure, and the network partitions that mattered most."
 date: 2026-07-17
 author: "Krish Srivastava"
 avatar: "assets/images/photo2.jpeg"
 tags: ["eBPF", "Reliability", "Engineering", "Agent"]
 ---
 
-A few weeks ago, a customer sent us a support email that started:
+A few weeks ago, we checked while testing:
 
-> We have a chatty metrics pipeline in the cluster, and when we did a backend rolling restart, your agent lost about 90 seconds of dependency data. The graph showed everything as healthy for those 90 seconds, then suddenly the new connections started showing up. We didn't notice for two days.
+> We have a chatty metrics pipeline in the cluster, and when we did a backend rolling restart, our agent lost about 90 seconds of dependency data. The graph showed everything as healthy for those 90 seconds, then suddenly the new connections started showing up. We didn't notice for two days.
 
 Ninety seconds. Doesn't sound like a lot. But ninety seconds during a rolling restart is exactly the window where you're trying to figure out whether the restart itself caused a regression. The agent saw every TCP 4-tuple during that window, the BPF ring was full of events, the agent just couldn't deliver them, and then the agent got OOMKilled because it was holding a few hundred batches in memory that were all going to expire before the backend came back.
 
@@ -23,7 +23,7 @@ The agent runs as a per-node DaemonSet and reads four BPF programs out of a `BPF
 
 The eBPF ring's failure mode is: it never fails. It just keeps overwriting the oldest event. So if user-space can't keep up, you lose data, but you don't block the kernel. The HTTP sender's failure mode is: it returns an error. The whole batch is rejected, no partial success, no row-level ack.
 
-What we did with the error used to be: log it, drop the batch, return. Two years of production telemetry taught us three things about that choice.
+What we did with the error used to be: log it, drop the batch, return. It taught us three things about that choice.
 
 1. **The error was always at the worst possible time.** Backend rolling restart, network blip, ingress controller reload, all the moments where the dependency graph was most useful were the moments the sender was failing.
 2. **In-memory retries don't survive a pod restart.** We tried `time.Sleep` + retry, and we tried an in-memory ring of "pending" batches. Both died the moment Kubernetes evicted the pod.
