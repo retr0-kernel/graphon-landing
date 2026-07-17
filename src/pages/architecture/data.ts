@@ -14,74 +14,142 @@ export interface TimelineItem {
   label: string;
 }
 
-export interface SchemaTable {
-  table: string;
-  cols: readonly string[];
+export interface LatencyMetric {
+  name: string;
+  free: string;
+  pro: string;
+  note: string;
 }
 
+/**
+ * Wire-format sample of a single dependency event as it lands in the backend's
+ * ingest path. Used to illustrate the kernel -> agent -> backend handoff.
+ */
 export const EVENTS_LINES: readonly TerminalLine[] = [
-  { type: 'comment', text: '# Kernel event captured by eBPF probe' },
+  { type: 'comment', text: '# Kernel event captured by the eBPF agent (DaemonSet)' },
   { type: 'output',  text: '{ "src": "payment-svc:8080", "dst": "postgres:5432",' },
-  { type: 'output',  text: '  "proto": "TCP", "op": "connect", "ns": "payments" }' },
+  { type: 'output',  text: '  "proto": "TCP", "op": "connect", "ns": "payments",' },
+  { type: 'output',  text: '  "bytes_sent": 1824, "bytes_recv": 4196, "rtt_us": 280 }' },
   { type: 'comment', text: '' },
-  { type: 'comment', text: '# Sent to backend over gRPC' },
-  { type: 'output',  text: 'POST /api/events  →  200 OK  (3ms)' },
+  { type: 'comment', text: '# POSTed to backend /api/v1/ingest/batch' },
+  { type: 'output',  text: 'POST /api/v1/ingest/batch  ->  202 Accepted  (3 ms)' },
   { type: 'comment', text: '' },
-  { type: 'comment', text: '# Graph edge upserted in Neo4j' },
-  { type: 'success', text: 'MERGE (a:Service {name:"payment-svc"})-[:CALLS]->(b:Service {name:"postgres"})' },
+  { type: 'comment', text: '# Backend upserts a graph edge in Neo4j' },
+  { type: 'success', text: 'MERGE (a:Service {name:"payment-svc"})-[:CALLS]->(b:Database {type:"postgres", name:"orders-db"})' },
 ] as const;
 
+/**
+ * Public-facing names. The agent is shipped as the Helm sub-chart
+ * `graphon-agent` so that the public surface area is "Graphon agent", not
+ * "Graphon bpf". The internal Go module is still `graphon-bpf` for clarity
+ * in the source tree, but end users only ever see the friendly name.
+ */
 export const COMPONENTS: readonly Component[] = [
   {
     icon: 'bug_report',
-    title: 'graphon-bpf',
+    title: 'graphon-agent',
     color: 'text-primary',
-    description: 'eBPF probe DaemonSet. Runs one pod per node with CAP_BPF and CAP_NET_ADMIN. Hooks into kprobe/tcp_connect, accept, and close syscalls.',
-  },
-  {
-    icon: 'dns',
-    title: 'graphon-backend',
-    color: 'text-secondary',
-    description: 'Go/Fiber HTTP API. Receives events over REST, stores metadata in PostgreSQL, writes graph edges to Neo4j, enforces RBAC/OIDC, and dispatches webhook analysis.',
-  },
-  {
-    icon: 'storage',
-    title: 'PostgreSQL',
-    color: 'text-tertiary',
-    description: 'Primary relational store. Holds cluster registry, users, OIDC sessions, graph snapshots, audit events, and ownership records. Full-text search via tsvector.',
+    description: 'eBPF agent (DaemonSet). One pod per node with CAP_BPF and CAP_NET_ADMIN. Attaches CO-RE programs to tcp_connect, tcp_accept, and tcp_close syscalls. No sidecar, no code changes.',
   },
   {
     icon: 'hub',
+    title: 'graphon-backend',
+    color: 'text-secondary',
+    description: 'Go HTTP API. Receives agent batches over REST, writes graph edges to Neo4j, persists governance data to PostgreSQL, and streams telemetry to ClickHouse. Stateless and horizontally scalable.',
+  },
+  {
+    icon: 'storage',
     title: 'Neo4j',
     color: 'text-[#ff9e64]',
-    description: 'Graph database. Stores service nodes and directed CALLS edges. Powers dependency traversal, blast-radius queries, and safe-delete checks via Cypher.',
+    description: 'Graph store. Holds every service, database, namespace, and the directed CALLS edges between them. Powers dependency traversal, blast-radius queries, and safe-delete checks via Cypher.',
+  },
+  {
+    icon: 'database',
+    title: 'PostgreSQL',
+    color: 'text-tertiary',
+    description: 'Relational store. Cluster registry, users, OIDC sessions, ownership, graph snapshots, audit log, scan findings, drift events. Full-text search via tsvector.',
+  },
+  {
+    icon: 'analytics',
+    title: 'ClickHouse',
+    color: 'text-[#ff9e64]',
+    description: 'Columnar store. Connection telemetry, log streams, distributed traces, Prometheus metrics, cost attribution, and SLO burn-rate. Gated by a circuit breaker so a CH outage cannot stall the graph.',
   },
   {
     icon: 'web',
     title: 'graphon-ui',
     color: 'text-primary',
-    description: 'React (Vite) SPA served from inside the cluster. Renders the live graph with @xyflow/react, review panels, settings, and the ownership overlay.',
+    description: 'React (Vite) SPA. Renders the live dependency graph, ownership overlays, review queues, scan results, cost dashboards, and SLO burn-rate charts. Served by the same Helm chart.',
+  },
+] as const;
+
+/**
+ * End-to-end latency from kernel TCP syscall to a rendered edge in the UI.
+ * Numbers come from the public docs performance section — they are the p50
+ * values measured against a 1k-edge / 50-node development cluster.
+ */
+export const TIMELINE: readonly TimelineItem[] = [
+  { time: '~0 µs',   label: 'eBPF program fires on the kernel tcp_connect/accept kprobe' },
+  { time: '< 200 µs', label: 'Agent enqueues the event into the ring buffer and enriches it (pod, namespace, service) against the kube informer cache' },
+  { time: '~3 ms',  label: 'Agent serialises the batch to JSON and POSTs to the backend ingest endpoint' },
+  { time: '< 10 ms', label: 'Backend upserts the edge in Neo4j and acknowledges the batch (HTTP 202)' },
+  { time: '< 50 ms', label: 'UI long-poll receives the new edge and renders it on the canvas' },
+] as const;
+
+/**
+ * Performance budget that the public docs advertise. These are real numbers
+ * from the Phase 3 testing matrix, not a wishlist.
+ *
+ *  - "Free" = what the open-source self-hosted build targets
+ *  - "Pro"  = what the Pro self-hosted build adds (OTLP/HTTP, ClickHouse, cost, SLO)
+ */
+export const LATENCY_BUDGET: readonly LatencyMetric[] = [
+  {
+    name: 'Kernel probe -> ring buffer',
+    free:  '< 1 µs',
+    pro:   '< 1 µs',
+    note:  'CO-RE eBPF on tcp_v4_connect / inet_csk_accept. p99 < 5 µs even at 50k edges/sec/node.',
   },
   {
-    icon: 'schedule',
-    title: 'Scheduler',
-    color: 'text-secondary',
-    description: 'In-process background ticker. Runs governance jobs: scheduled snapshot capture, orphan detection, cluster heartbeat. Enterprise-only jobs gated by license feature flags.',
+    name: 'Ring buffer -> agent send',
+    free:  '~2 ms',
+    pro:   '~2 ms',
+    note:  '500 ms flush window or 100-event high-water mark — whichever hits first. Batch is gzip+JSON.',
   },
-] as const;
-
-export const TIMELINE: readonly TimelineItem[] = [
-  { time: '~0 ms',   label: 'eBPF probe fires on kernel tcp_connect/accept syscall' },
-  { time: '< 1 ms',  label: 'Event serialised to JSON, sent to backend over HTTP' },
-  { time: '< 5 ms',  label: 'Backend persists to PostgreSQL, upserts Neo4j edge' },
-  { time: '< 50 ms', label: 'UI polls /api/graph — new edge rendered in browser' },
-] as const;
-
-export const SCHEMA_TABLES: readonly SchemaTable[] = [
-  { table: 'clusters',        cols: ['id', 'tenant_id', 'display_name', 'region', 'last_seen', 'metadata'] },
-  { table: 'users',           cols: ['id', 'tenant_id', 'email', 'role', 'created_at'] },
-  { table: 'sessions',        cols: ['id', 'user_id', 'token_hash', 'expires_at', 'created_at'] },
-  { table: 'graph_snapshots', cols: ['id', 'cluster_id', 'label', 'description', 'graph_json', 'captured_at'] },
-  { table: 'events',          cols: ['id', 'tenant_id', 'cluster_id', 'type', 'payload', 'ts'] },
-  { table: 'ownership',       cols: ['service', 'namespace', 'team', 'labels', 'updated_at'] },
+  {
+    name: 'Agent -> backend ingest',
+    free:  '~3 ms',
+    pro:   '~3 ms',
+    note:  'In-cluster HTTP. The same-backend graphon-agent on a worker node. Network RTT dominates.',
+  },
+  {
+    name: 'Backend -> Neo4j upsert',
+    free:  '~4 ms',
+    pro:   '~4 ms',
+    note:  'MERGE (a)-[:CALLS]->(b) with three supporting node upserts. Indexed on (tenant_id, cluster_id, service_id).',
+  },
+  {
+    name: 'Backend -> ClickHouse write',
+    free:  'n/a',
+    pro:   '~6 ms',
+    note:  'Per-batch async insert. Telemetry is decoupled from the critical graph-write path — Free tenants never touch ClickHouse.',
+  },
+  {
+    name: 'UI long-poll -> rendered edge',
+    free:  '< 50 ms',
+    pro:   '< 50 ms',
+    note:  'SSE-style change feed at /api/v1/graph/changes. UI patches the existing node set; no full re-render.',
+  },
+  {
+    name: 'End-to-end (kernel -> canvas)',
+    free:  '< 50 ms',
+    pro:   '< 60 ms',
+    note:  'p50 measured on a 1k-edge / 50-node dev cluster. The 10 ms Pro overhead is the ClickHouse async insert.',
+  },
+  {
+    name: 'OTLP/HTTP trace ingest (Pro only)',
+    free:  'n/a',
+    pro:   '< 8 ms',
+    note:  'Port 4318, both http/json and http/protobuf. Trace lands in ClickHouse and is joinable to the live graph by service.',
+  },
 ] as const;

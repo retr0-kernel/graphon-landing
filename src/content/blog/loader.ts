@@ -10,10 +10,7 @@
  * Adding a new post: drop a `.md` file in `src/content/blog/`. No imports, no code edits.
  */
 
-// ---------------------------------------------------------------------------
 // Public types
-// ---------------------------------------------------------------------------
-
 export interface BlogPostMeta {
   slug: string;
   title: string;
@@ -39,14 +36,12 @@ export type BlogBlock =
   | { kind: 'h2'; text: string }
   | { kind: 'h3'; text: string }
   | { kind: 'code'; language: string; text: string }
+  | { kind: 'mermaid'; source: string }
   | { kind: 'quote'; text: string }
   | { kind: 'list'; ordered: boolean; items: string[] }
   | { kind: 'table'; header: string[]; rows: string[][] };
 
-// ---------------------------------------------------------------------------
 // Raw file import
-// ---------------------------------------------------------------------------
-
 import { resolveAvatar } from './avatars';
 
 // `eager: true` => bundle ships the raw strings, no async loader needed.
@@ -58,10 +53,7 @@ const RAW_FILES = import.meta.glob('/src/content/blog/*.md', {
   eager: true,
 }) as Record<string, string>;
 
-// ---------------------------------------------------------------------------
 // Frontmatter parsing
-// ---------------------------------------------------------------------------
-
 interface Frontmatter {
   title?: string;
   excerpt?: string;
@@ -147,10 +139,7 @@ function parseInlineList(raw: string): string[] {
     .filter(p => p.length > 0);
 }
 
-// ---------------------------------------------------------------------------
 // Slug + reading-time helpers
-// ---------------------------------------------------------------------------
-
 function slugFromPath(path: string): string {
   // `/src/content/blog/foo-bar.md` -> `foo-bar`
   const file = path.split('/').pop() ?? '';
@@ -179,10 +168,7 @@ function firstParagraph(body: string): string {
   return '';
 }
 
-// ---------------------------------------------------------------------------
 // Markdown → blocks
-// ---------------------------------------------------------------------------
-
 /**
  * Parse a Markdown string into the typed block array the blog page renders.
  *
@@ -222,7 +208,11 @@ export function parseMarkdown(src: string): BlogBlock[] {
       }
       // skip the closing fence, if present
       if (i < lines.length) i += 1;
-      blocks.push({ kind: 'code', language, text: buf.join('\n') });
+      if (language === 'mermaid') {
+        blocks.push({ kind: 'mermaid', source: buf.join('\n') });
+      } else {
+        blocks.push({ kind: 'code', language, text: buf.join('\n') });
+      }
       continue;
     }
 

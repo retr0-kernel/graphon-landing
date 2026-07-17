@@ -13,3 +13,4 @@ cache/
 DEPLOYMENT.md
 .codebase-memory/
 *.code-workspace
+src/content/linkedin/v0-6-0-launch.md

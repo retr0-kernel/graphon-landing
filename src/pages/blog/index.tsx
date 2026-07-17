@@ -6,6 +6,7 @@ import { POSTS, POSTS_BY_SLUG, type BlogPost, type BlogBlock } from '../../conte
 import { useInView } from '../../hooks/useInView';
 import { ROUTES } from '../../config/routes';
 import { AuthorBadge } from './components/AuthorBadge';
+import { Mermaid } from './components/Mermaid';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -87,6 +88,8 @@ function Block({ block }: { block: BlogBlock }) {
           <pre className={styles.codeBlock}><code>{block.text}</code></pre>
         </div>
       );
+    case 'mermaid':
+      return <Mermaid source={block.source} />;
     case 'table':
       return (
         <div className={styles.tableWrap}>

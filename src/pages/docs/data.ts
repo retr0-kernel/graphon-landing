@@ -1,8 +1,11 @@
 import type { TerminalLine } from '../../components/terminal';
 
+export type DocTier = 'free' | 'pro' | 'common';
+
 export interface DocSection {
   id: string;
   title: string;
+  tier: DocTier;
   items?: { id: string; label: string }[];
 }
 
@@ -10,6 +13,7 @@ export const SIDEBAR_SECTIONS: readonly DocSection[] = [
   {
     id: 'getting-started',
     title: 'Getting Started',
+    tier: 'common',
     items: [
       { id: 'prerequisites',    label: 'Prerequisites'      },
       { id: 'quick-install',    label: 'Quick Install'      },
@@ -19,6 +23,7 @@ export const SIDEBAR_SECTIONS: readonly DocSection[] = [
   {
     id: 'architecture',
     title: 'Architecture',
+    tier: 'common',
     items: [
       { id: 'how-ebpf-works',   label: 'How eBPF Works'     },
       { id: 'components',       label: 'Components'         },
@@ -28,6 +33,7 @@ export const SIDEBAR_SECTIONS: readonly DocSection[] = [
   {
     id: 'configuration',
     title: 'Configuration',
+    tier: 'common',
     items: [
       { id: 'env-vars',         label: 'Environment Vars'   },
       { id: 'deployment-modes', label: 'Deployment Modes'   },
@@ -37,6 +43,7 @@ export const SIDEBAR_SECTIONS: readonly DocSection[] = [
   {
     id: 'observability',
     title: 'Observability (Phase 4)',
+    tier: 'pro',
     items: [
       { id: 'otlp-traces',      label: 'OTLP Tracing'       },
       { id: 'prometheus',       label: 'Prometheus Scraping' },
@@ -50,6 +57,7 @@ export const SIDEBAR_SECTIONS: readonly DocSection[] = [
   {
     id: 'api-reference',
     title: 'API Reference',
+    tier: 'common',
     items: [
       { id: 'auth-headers',     label: 'Authentication'     },
       { id: 'graph-api',        label: 'Graph'              },
@@ -66,6 +74,7 @@ export const SIDEBAR_SECTIONS: readonly DocSection[] = [
   {
     id: 'webhooks',
     title: 'Webhooks',
+    tier: 'pro',
     items: [
       { id: 'github-webhook',   label: 'GitHub Setup'       },
       { id: 'gitlab-webhook',   label: 'GitLab Setup'       },
@@ -74,6 +83,7 @@ export const SIDEBAR_SECTIONS: readonly DocSection[] = [
   {
     id: 'oidc-rbac',
     title: 'OIDC & RBAC',
+    tier: 'pro',
     items: [
       { id: 'oidc-setup',       label: 'SSO / OIDC Setup'   },
       { id: 'roles',            label: 'Roles & Permissions'},
@@ -82,6 +92,7 @@ export const SIDEBAR_SECTIONS: readonly DocSection[] = [
   {
     id: 'license',
     title: 'License System',
+    tier: 'common',
     items: [
       { id: 'free-tier',        label: 'Free Tier'          },
       { id: 'pro-license',      label: 'Getting a Pro Key'  },
@@ -91,6 +102,7 @@ export const SIDEBAR_SECTIONS: readonly DocSection[] = [
   {
     id: 'helm-chart',
     title: 'Helm Chart',
+    tier: 'common',
     items: [
       { id: 'helm-install',     label: 'Installation'       },
       { id: 'helm-values',      label: 'Values Reference'   },

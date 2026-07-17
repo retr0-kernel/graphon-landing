@@ -24,7 +24,7 @@ import {
   AZ_LABEL_YAML, AZ_HELM_YAML, AZ_UI_NOTE,
   SCAN_HELM_YAML, SCAN_UI_NOTE,
 } from './data';
-import type { ApiEndpoint } from './data';
+import type { ApiEndpoint, DocTier } from './data';
 
 // ── Small shared primitives ─────────────────────────────────────────────────
 
@@ -107,6 +107,63 @@ function Section({ id, title, children, delay = 0 }: {
   );
 }
 
+// ── Tier tabs (Free / Pro / Enterprise) ──────────────────────────────────────
+
+type ActiveTier = 'free' | 'pro' | 'enterprise';
+
+function TierTabs({ active, onChange }: { active: ActiveTier; onChange: (t: ActiveTier) => void }) {
+  const tabs: { id: ActiveTier; label: string; sub: string; soon?: boolean }[] = [
+    { id: 'free',       label: 'Free',       sub: 'Self-hosted, Apache 2.0' },
+    { id: 'pro',        label: 'Pro',        sub: 'Self-hosted, annual license' },
+    { id: 'enterprise', label: 'Enterprise', sub: 'Managed cloud (coming soon)', soon: true },
+  ];
+  return (
+    <div className={styles.tierTabs} role="tablist" aria-label="Documentation tier">
+      {tabs.map(t => (
+        <button
+          key={t.id}
+          type="button"
+          role="tab"
+          aria-selected={active === t.id}
+          className={`${styles.tierTab} ${active === t.id ? styles.tierTabActive : ''} ${t.soon ? styles.tierTabSoon : ''}`}
+          onClick={() => onChange(t.id)}
+        >
+          <span className={styles.tierTabLabel}>
+            {t.label}
+            {t.soon && <span className={styles.tierTabPill}>Coming Soon</span>}
+          </span>
+          <span className={styles.tierTabSub}>{t.sub}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function EnterpriseOverlay() {
+  return (
+    <div className={styles.enterpriseOverlayWrap} aria-hidden="false">
+      <div className={styles.enterpriseOverlayBlur} aria-hidden="true" />
+      <div className={styles.enterpriseOverlayContent}>
+        <span className={`material-symbols-outlined ${styles.enterpriseOverlayIcon}`}>cloud</span>
+        <h3 className={styles.enterpriseOverlayTitle}>Graphon Cloud (Enterprise) — Coming Soon</h3>
+        <p className={styles.enterpriseOverlayBody}>
+          Fully managed Neo4j, PostgreSQL, and ClickHouse. 5-minute onboarding.
+          SOC 2 roadmap. Named support with 24×7 P1 SLA.
+        </p>
+        <a
+          href="https://github.com/retr0-kernel/graphon-helm/issues/new?title=Enterprise+Waitlist&labels=enterprise"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.enterpriseOverlayBtn}
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>notifications</span>
+          Join the Waitlist
+        </a>
+      </div>
+    </div>
+  );
+}
+
 function SubSection({ id, title, children }: {
   id: string; title: string; children: React.ReactNode;
 }) {
@@ -121,6 +178,18 @@ function SubSection({ id, title, children }: {
 // ── Docs page ───────────────────────────────────────────────────────────────
 
 export default function Docs() {
+  // Active tier filter (Free / Pro / Enterprise)
+  const [activeTier, setActiveTier] = useState<ActiveTier>('free');
+
+  // Sections visible in the sidebar for the active tier
+  const visibleSections = useMemo(() =>
+    SIDEBAR_SECTIONS.filter(s => {
+      if (activeTier === 'free')       return s.tier === 'common' || s.tier === 'free';
+      if (activeTier === 'pro')        return s.tier === 'common' || s.tier === 'pro';
+      return true; // enterprise: show everything (under overlay)
+    }),
+  [activeTier]);
+
   // Collect all section + sub-section IDs for active tracking
   const allIds = useMemo(() =>
     SIDEBAR_SECTIONS.flatMap(s => [
@@ -134,13 +203,13 @@ export default function Docs() {
 
   // Label of the currently active item, shown on the mobile "on this page" toggle
   const activeLabel = useMemo(() => {
-    for (const section of SIDEBAR_SECTIONS) {
+    for (const section of visibleSections) {
       const match = section.items?.find(i => i.id === activeId);
       if (match) return match.label;
       if (section.id === activeId) return section.title;
     }
-    return SIDEBAR_SECTIONS[0]?.title ?? 'Contents';
-  }, [activeId]);
+    return visibleSections[0]?.title ?? 'Contents';
+  }, [activeId, visibleSections]);
 
   // Auto-scroll the sidebar so the active item is always fully visible with padding
   useEffect(() => {
@@ -210,7 +279,7 @@ export default function Docs() {
           </button>
 
           <div className={`${styles.sidebarPanel} ${mobileNavOpen ? styles.sidebarPanelOpen : ''}`}>
-            {SIDEBAR_SECTIONS.map(section => (
+            {visibleSections.map(section => (
               <div key={section.id} className={styles.sidebarGroup}>
                 <p className={styles.sidebarGroupTitle}>{section.title}</p>
                 {section.items?.map(item => (
@@ -230,6 +299,12 @@ export default function Docs() {
 
         {/* ── Main content ─────────────────────────────────────────── */}
         <article className={styles.content}>
+
+          {/* ── Tier tabs (Free / Pro / Enterprise) ──────────────── */}
+          <TierTabs active={activeTier} onChange={setActiveTier} />
+          {activeTier === 'enterprise' && <EnterpriseOverlay />}
+
+          <div className={activeTier === 'enterprise' ? styles.contentBlurred : ''}>
 
           {/* ── Getting Started ─────────────────────────────────── */}
           <Section id="getting-started" title="Getting Started">
@@ -783,6 +858,7 @@ export default function Docs() {
             </SubSection>
           </Section>
 
+          </div>
         </article>
         </div>
       </div>

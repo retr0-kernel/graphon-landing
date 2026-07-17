@@ -52,7 +52,10 @@ export default function Pricing() {
         >
           <p className={styles.eyebrow}>Pricing</p>
           <h1 className={styles.title}>Start free. Scale when you need to.</h1>
-          <p className={styles.subtitle}>The core graph is free forever. Pay only for team-scale features.</p>
+          <p className={styles.subtitle}>
+            The core graph is free forever. Pay only for the team-scale features
+            you need. Graphon Cloud (Enterprise) is a fully managed option which will be coming soon.
+          </p>
         </div>
 
         {/* ── Pricing Cards ────────────────────────────────────────── */}
@@ -117,22 +120,31 @@ export default function Pricing() {
             </ul>
           </div>
 
-          {/* Cloud */}
+          {/* Graphon Cloud (Enterprise) */}
           <div
             className={`${styles.cardDimmed} glow-card ${styles.revealScale} ${cardsVisible ? styles.inView : ''}`}
             style={delay(260)}
           >
-            <div>
-              <p className={`${styles.tierLabel} text-secondary`}>Graphon Cloud</p>
-              <div className={styles.priceRow}>
-                <span className="font-display font-bold text-headline-lg text-on-surface cursor-default">Coming Soon</span>
-              </div>
-              <p className={styles.cardNote}>Managed. No cluster admin required.</p>
+            <div className={styles.cloudPill}>
+              <span className={styles.cloudPulse} aria-hidden="true" />
+              <span>Coming Soon</span>
             </div>
-            <button disabled className={styles.disabledBtn}>
+            <div>
+              <p className={`${styles.tierLabel} text-secondary`}>Graphon Cloud <span className={styles.tierLabelSm}>(Enterprise)</span></p>
+              <div className={styles.priceRow}>
+                <span className="font-display font-bold text-headline-lg text-on-surface cursor-default">Contact Us</span>
+              </div>
+              <p className={styles.cardNote}>Fully managed. We run the control plane; you run the agent.</p>
+            </div>
+            <a
+              href={CTA_LINKS.waitlist}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.outlineBtnSecondary}
+            >
               <span className="material-symbols-outlined text-[18px]">notifications</span>
               Join Waitlist
-            </button>
+            </a>
             <ul className={styles.featureList}>
               {CLOUD_FEATURES.map(f => (
                 <li key={f} className={styles.featureItem}>
@@ -157,7 +169,7 @@ export default function Pricing() {
                   <th className={styles.th}>Feature</th>
                   <th className={`${styles.thCenter} text-tertiary`}>Free</th>
                   <th className={`${styles.thCenter} text-primary`}>Pro</th>
-                  <th className={`${styles.thCenter} text-secondary`}>Cloud</th>
+                  <th className={`${styles.thCenter} text-secondary`}>Graphon Cloud<br/><span className={styles.thSub}>(Enterprise)</span></th>
                 </tr>
               </thead>
               <tbody>

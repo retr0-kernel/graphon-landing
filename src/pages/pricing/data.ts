@@ -14,49 +14,53 @@ export interface FaqItem {
 }
 
 export const FREE_FEATURES: readonly string[] = [
-  'Live dependency graph',
-  'Drift detection (manual snapshots)',
-  'Safe delete analysis',
-  'Ownership discovery',
-  'Full-text search & export',
-  'REST API',
-  'Community support (GitHub Issues)',
+  'Live dependency graph (eBPF, no sidecars)',
+  'Drift detection & manual snapshots',
+  'Safe delete analysis (blast radius to depth 5)',
+  'Ownership discovery from K8s labels',
+  'Full-text search & export (Mermaid, DOT, SVG)',
+  'REST API & audit log',
   'Unlimited nodes & edges',
-  'No telemetry sent anywhere',
+  'No telemetry, no call home',
+  'Apache-2.0 — forever',
 ] as const;
 
 export const PRO_FEATURES: readonly string[] = [
   'Everything in Free',
-  'RBAC (6 roles: Viewer / Developer / Manager / Platform-Admin / Admin / Agent)',
+  'RBAC with 6 built-in roles',
   'OIDC / SSO with group-to-role mapping',
-  'GitHub PR impact analysis & comments',
-  'GitLab MR impact analysis & comments',
-  'Scheduled graph snapshots',
+  'GitHub PR & GitLab MR impact comments',
+  'Scheduled graph snapshots with retention',
   'Multi-cluster registry',
-  'Snapshot retention policies',
-  'ClickHouse telemetry: connections, logs, traces, metrics',
-  'OTLP/HTTP trace ingestion (port 4318)',
-  'Prometheus metric scraping (annotation-driven, with auth)',
-  'Live log streaming + structured search',
-  'Cost tracking (AWS/GCP/Azure, configurable pricing)',
-  'SLO engine (availability, latency, custom error budgets)',
-  'Reliability & security scanner (13 checks, all configurable)',
+  'ClickHouse telemetry (logs, traces, metrics)',
+  'OTLP/HTTP receiver on port 4318',
+  'Prometheus metric scraping (annotation-driven)',
+  'Cost attribution (AWS / GCP / Azure)',
+  'SLO tracking with multi-window burn-rate',
+  'Reliability scanner (13 checks)',
   'Priority support',
   'Custom license term',
 ] as const;
 
+/**
+ * Graphon Cloud (Enterprise) — managed offering, currently "Coming Soon".
+ * Same Pro feature surface, but we run the control plane (Neo4j, PostgreSQL,
+ * ClickHouse) and you only run the agent in your cluster.
+ */
 export const CLOUD_FEATURES: readonly string[] = [
   'Everything in Pro',
-  'Fully managed control plane (Neo4j + PostgreSQL + ClickHouse)',
-  'No cluster admin required',
-  'Automatic updates',
+  'Fully managed Graphon Cloud control plane',
+  'Neo4j + PostgreSQL + ClickHouse managed for you',
+  'No cluster admin required on your side',
+  'Automatic zero-downtime updates',
+  'SOC 2 Type II + tamper-evident audit log',
+  'SIEM streaming (Splunk, Datadog, Panther)',
+  'Named support engineer & 24×7 P1',
   'SLA-backed uptime',
-  'Usage-based billing',
-  'Dedicated support channel',
 ] as const;
 
 export const COMPARE: readonly CompareRow[] = [
-  { feature: 'Live dependency graph',           free: true,        pro: true,        cloud: true        },
+  { feature: 'Live dependency graph (eBPF)',   free: true,        pro: true,        cloud: true        },
   { feature: 'Drift detection',                 free: 'Manual',    pro: 'Scheduled', cloud: 'Scheduled' },
   { feature: 'Safe delete analysis',            free: true,        pro: true,        cloud: true        },
   { feature: 'Ownership discovery',             free: true,        pro: true,        cloud: true        },
@@ -69,15 +73,19 @@ export const COMPARE: readonly CompareRow[] = [
   { feature: 'GitLab MR Impact',                free: false,       pro: true,        cloud: true        },
   { feature: 'Scheduled snapshots',             free: false,       pro: true,        cloud: true        },
   { feature: 'Multi-cluster registry',          free: false,       pro: true,        cloud: true        },
+  { feature: 'OTLP/HTTP trace ingest (port 4318)', free: false,     pro: true,        cloud: true        },
   { feature: 'Connection telemetry',            free: false,       pro: true,        cloud: true        },
   { feature: 'Logs (structured + raw)',         free: false,       pro: true,        cloud: true        },
   { feature: 'Distributed traces (OTLP)',       free: false,       pro: true,        cloud: true        },
   { feature: 'Prometheus metrics',              free: false,       pro: true,        cloud: true        },
   { feature: 'Cost tracking',                   free: false,       pro: true,        cloud: true        },
-  { feature: 'SLO engine',                      free: false,       pro: true,        cloud: true        },
+  { feature: 'SLO engine (multi-window burn-rate)', free: false,   pro: true,        cloud: true        },
   { feature: 'Reliability scanner (13 checks)', free: false,       pro: true,        cloud: true        },
-  { feature: 'Managed hosting',                 free: false,       pro: false,       cloud: true        },
+  { feature: 'Managed control plane',           free: false,       pro: false,       cloud: true        },
   { feature: 'Automatic updates',               free: false,       pro: false,       cloud: true        },
+  { feature: 'SOC 2 + audit log export',        free: false,       pro: false,       cloud: true        },
+  { feature: 'Named support & 24×7 P1',         free: false,       pro: false,       cloud: true        },
+  { feature: 'SLA-backed uptime',               free: false,       pro: false,       cloud: true        },
   { feature: 'Priority support',                free: false,       pro: 'Included',  cloud: 'Included'  },
 ] as const;
 
@@ -115,14 +123,19 @@ export const FAQS: readonly FaqItem[] = [
     a: 'Yes. Use the disabledChecks list in values.yaml or the Settings → Scan Config UI. You can also exclude entire namespaces or specific workload names.',
   },
   {
-    q: 'When is Graphon Cloud available?',
+    q: 'When is Graphon Cloud (Enterprise) available?',
     a: "We are building it. Early access users get 3 months free. Open a GitHub issue to get on the waitlist.",
+  },
+  {
+    q: 'Is there a difference between Pro self-hosted and Graphon Cloud (Enterprise)?',
+    a: 'The Pro feature surface is identical. Graphon Cloud (Enterprise) is the same Pro capabilities, but we run the control plane for you (Neo4j, PostgreSQL, ClickHouse) and you only run the agent in your cluster. It also adds managed-hosting, automatic updates, SOC 2 controls, and a 24×7 P1 SLA.',
   },
 ] as const;
 
 export const CTA_LINKS = {
   openIssue:    `${GITHUB_URL}/issues/new?title=Pro+License+Request&labels=license`,
   getLicense:   `${GITHUB_URL}/issues/new?title=Pro+License+Request&labels=license`,
+  waitlist:     `${GITHUB_URL}/issues/new?title=Graphon+Cloud+Waitlist&labels=cloud-waitlist`,
   linkedin:     'https://linkedin.com/in/retr0-kernel',
   deploy:       GITHUB_URL,
   readDocs:     ROUTES.docs,

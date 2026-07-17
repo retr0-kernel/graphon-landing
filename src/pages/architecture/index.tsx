@@ -1,19 +1,19 @@
 import { type CSSProperties, useState, useEffect, useRef } from 'react';
 import Terminal from '../../components/terminal';
 import styles from './styles.module.css';
-import { EVENTS_LINES, COMPONENTS, TIMELINE, SCHEMA_TABLES } from './data';
+import { EVENTS_LINES, COMPONENTS, TIMELINE, LATENCY_BUDGET } from './data';
 import { useInView } from '../../hooks/useInView';
 import { useTheme } from '../../context/ThemeContext';
 import architectureImgDark from '../../assets/images/architecture.webp';
 import architectureImgLight from '../../assets/images/architecture_light.webp';
 
 export default function Architecture() {
-  const { ref: headerRef,     visible: headerVisible     } = useInView<HTMLDivElement>();
-  const { ref: diagramRef,    visible: diagramVisible    } = useInView<HTMLDivElement>();
-  const { ref: timelineRef,   visible: timelineVisible   } = useInView<HTMLDivElement>();
-  const { ref: ebpfRef,       visible: ebpfVisible       } = useInView<HTMLDivElement>();
-  const { ref: componentsRef, visible: componentsVisible } = useInView<HTMLDivElement>();
-  const { ref: schemaRef,     visible: schemaVisible     } = useInView<HTMLDivElement>();
+  const { ref: headerRef,         visible: headerVisible         } = useInView<HTMLDivElement>();
+  const { ref: diagramRef,        visible: diagramVisible        } = useInView<HTMLDivElement>();
+  const { ref: timelineRef,       visible: timelineVisible       } = useInView<HTMLDivElement>();
+  const { ref: latencyRef,        visible: latencyVisible        } = useInView<HTMLDivElement>();
+  const { ref: ebpfRef,           visible: ebpfVisible           } = useInView<HTMLDivElement>();
+  const { ref: componentsRef,     visible: componentsVisible     } = useInView<HTMLDivElement>();
 
   const delay = (ms: number): CSSProperties => ({ '--delay': `${ms}ms` } as CSSProperties);
   const { resolved } = useTheme();
@@ -72,13 +72,20 @@ export default function Architecture() {
           />
         </div>
 
-        {/* ── Timeline ─────────────────────────────────────────────── */}
+        {/* ── Pipeline Timeline (event-to-graph latency, narrative) ── */}
         <div ref={timelineRef} className={styles.timelineSection}>
           <h2
             className={`${styles.sectionTitle} ${styles.reveal} ${timelineVisible ? styles.inView : ''}`}
           >
             Event-to-graph latency
           </h2>
+          <p
+            className={`${styles.sectionLede} ${styles.reveal} ${timelineVisible ? styles.inView : ''}`}
+            style={delay(40)}
+          >
+            From a TCP syscall in the kernel to a rendered edge on the canvas — the full pipeline,
+            with the time budget at every hop. Numbers are p50 on a 1k-edge / 50-node dev cluster.
+          </p>
           <div className={styles.timelineGrid}>
             {TIMELINE.map(({ time, label }, i) => (
               <div
@@ -93,25 +100,77 @@ export default function Architecture() {
           </div>
         </div>
 
+        {/* ── Latency Budget Table (real numbers, Free vs Pro) ─────── */}
+        <div
+          ref={latencyRef}
+          className={`${styles.latencySection} glass-panel ${styles.reveal} ${latencyVisible ? styles.inView : ''}`}
+        >
+          <h2 className={styles.sectionTitle}>Performance budget</h2>
+          <p className={styles.sectionLede}>
+            The numbers above are the high-level pipeline. The table below is the engineering
+            budget the team measures against on every release — what we promise Free and Pro
+            self-hosted installs alike, and what the Pro data plane adds on top.
+          </p>
+          <div className={styles.tableWrap}>
+            <table className={styles.table}>
+              <thead className={styles.thead}>
+                <tr>
+                  <th className={styles.th}>Hop</th>
+                  <th className={styles.th}>Free</th>
+                  <th className={styles.th}>Pro</th>
+                  <th className={styles.th}>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {LATENCY_BUDGET.map((m, i) => (
+                  <tr
+                    key={m.name}
+                    className={`${styles.reveal} ${latencyVisible ? styles.inView : ''}`}
+                    style={delay(120 + i * 60)}
+                  >
+                    <td className={styles.tdMono}>{m.name}</td>
+                    <td className={styles.td}><span className={styles.tierFree}>{m.free}</span></td>
+                    <td className={styles.td}><span className={styles.tierPro}>{m.pro}</span></td>
+                    <td className={styles.td}>{m.note}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className={styles.fineprint}>
+            p50 measured on a single-node dev cluster against a synthetic workload of 5k TCP events/sec.
+            Real-world numbers scale linearly with edge volume; on a 10k-edge cluster, the
+            end-to-end p50 sits at 80–90 ms with the same p99 envelope.
+          </p>
+        </div>
+
         {/* ── eBPF Deep Dive ───────────────────────────────────────── */}
         <div ref={ebpfRef} className={styles.ebpfSection}>
           <div className={`${styles.ebpfCopy} ${styles.revealLeft} ${ebpfVisible ? styles.inView : ''}`}>
-            <h2 className={styles.sectionTitle}>How the eBPF probe works</h2>
+            <h2 className={styles.sectionTitle}>How the agent probe works</h2>
             <p className={styles.ebpfBody}>
-              The <code className={styles.inlineCode}>graphon-bpf</code> DaemonSet
-              runs one pod per node. It attaches eBPF programs to kernel kprobes — specifically{' '}
+              The <code className={styles.inlineCode}>graphon-agent</code> DaemonSet
+              runs one pod per node. It attaches CO-RE (Compile Once — Run Everywhere) eBPF
+              programs to kernel kprobes — specifically{' '}
               <code className={styles.inlineCode}>tcp_v4_connect</code>,{' '}
-              <code className={styles.inlineCode}>inet_csk_accept</code>, and{' '}
-              <code className={styles.inlineCode}>tcp_close</code>.
+              <code className={styles.inlineCode}>inet_csk_accept</code>,{' '}
+              <code className={styles.inlineCode}>tcp_close</code>, and a{' '}
+              <code className={styles.inlineCode}>sock_ops</code> callback for L7 sampling
+              (Pro only).
             </p>
             <p className={styles.ebpfBody}>
-              Each event carries the source and destination pod identity (resolved from cgroup metadata),
-              namespace, port, and protocol. This happens at the kernel boundary — no userspace agent
-              sitting in the data path, no sampling, no missed connections.
+              Every event carries the source and destination pod identity (resolved from
+              cgroup metadata), namespace, port, and protocol. This happens at the kernel
+              boundary — no userspace agent sitting in the data path, no sampling, no missed
+              connections. The probe only reads connection metadata; it never inspects
+              application payload.
             </p>
             <p className={styles.ebpfBody}>
-              Events are batched in a perf ring buffer and flushed to the backend every few milliseconds.
-              The entire path from TCP syscall to rendered graph edge takes under 50 ms.
+              Events land in a per-CPU ring buffer (<code className={styles.inlineCode}>BPF_MAP_TYPE_RINGBUF</code>)
+              and are flushed in batches of up to 100 events or every 500 ms, whichever hits first.
+              Failed batches fall back to a crash-safe on-disk spill buffer
+              (<code className={styles.inlineCode}>/var/lib/graphon/spill.log</code>) so a backend
+              outage or a pod restart never loses data.
             </p>
           </div>
           <div className={`${styles.revealRight} ${ebpfVisible ? styles.inView : ''}`}>
@@ -136,30 +195,6 @@ export default function Architecture() {
                 <span className={`material-symbols-outlined text-[28px] ${color}`}>{icon}</span>
                 <h3 className={styles.componentTitle}>{title}</h3>
                 <p className={styles.componentDesc}>{description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── Storage Schema ────────────────────────────────────────── */}
-        <div
-          ref={schemaRef}
-          className={`${styles.schemaSection} glass-panel ${styles.reveal} ${schemaVisible ? styles.inView : ''}`}
-        >
-          <h2 className={styles.sectionTitle}>Storage Schema (PostgreSQL)</h2>
-          <div className={styles.schemaGrid}>
-            {SCHEMA_TABLES.map(({ table, cols }, i) => (
-              <div
-                key={table}
-                className={`${styles.schemaTable} ${styles.reveal} ${schemaVisible ? styles.inView : ''}`}
-                style={delay(100 + i * 80)}
-              >
-                <p className={styles.schemaTableName}>{table}</p>
-                <ul className="space-y-0.5">
-                  {cols.map(c => (
-                    <li key={c} className={styles.schemaCol}>{c}</li>
-                  ))}
-                </ul>
               </div>
             ))}
           </div>
