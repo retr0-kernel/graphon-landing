@@ -111,6 +111,15 @@ function Section({ id, title, children, delay = 0 }: {
 
 type ActiveTier = 'free' | 'pro' | 'enterprise';
 
+const PRO_ONLY_ITEM_IDS = new Set([
+  'telemetry-api',
+  'cost-api',
+  'scan-api',
+  'slo-api',
+  'pro-license',
+  'apply-key',
+]);
+
 function TierTabs({ active, onChange }: { active: ActiveTier; onChange: (t: ActiveTier) => void }) {
   const tabs: { id: ActiveTier; label: string; sub: string; soon?: boolean }[] = [
     { id: 'free',       label: 'Free',       sub: 'Self-hosted, Apache 2.0' },
@@ -187,15 +196,20 @@ export default function Docs() {
       if (activeTier === 'free')       return s.tier === 'common' || s.tier === 'free';
       if (activeTier === 'pro')        return s.tier === 'common' || s.tier === 'pro';
       return true; // enterprise: show everything (under overlay)
-    }),
+    }).map(section => ({
+      ...section,
+      items: activeTier === 'free'
+        ? section.items?.filter(item => !PRO_ONLY_ITEM_IDS.has(item.id))
+        : section.items,
+    })),
   [activeTier]);
 
   // Collect all section + sub-section IDs for active tracking
   const allIds = useMemo(() =>
-    SIDEBAR_SECTIONS.flatMap(s => [
+    visibleSections.flatMap(s => [
       s.id,
       ...(s.items?.map(i => i.id) ?? []),
-    ]), []);
+    ]), [visibleSections]);
 
   const activeId = useActiveSection(allIds);
   const sidebarRef = useRef<HTMLElement>(null);
@@ -456,9 +470,11 @@ export default function Docs() {
 
             <SubSection id="deployment-modes" title="Deployment Modes">
               <div className={styles.modeCards}>
-                {DEPLOYMENT_MODES.map((m, i) => (
+                {DEPLOYMENT_MODES
+                  .slice(0, activeTier === 'free' ? 1 : activeTier === 'pro' ? 2 : 3)
+                  .map((m, i) => (
                   <div key={m.mode} className={i === 1 ? styles.modeCardHighlight : styles.modeCard}>
-                    <p className={styles.modeBadge}>{i === 2 ? 'Coming Soon' : i === 1 ? 'Enterprise' : 'Free'}</p>
+                    <p className={styles.modeBadge}>{i === 2 ? 'Coming Soon' : i === 1 ? 'Pro' : 'Free'}</p>
                     <p className={styles.modeTitle}>{m.mode}</p>
                     <p className={styles.modeDesc}>{m.desc}</p>
                     <ul className={styles.modeFeatures}>
@@ -489,7 +505,7 @@ export default function Docs() {
           </Section>
 
           {/* ── Observability (Phase 4) ───────────────────────────── */}
-          <Section id="observability" title="Observability (Phase 4)">
+          {activeTier !== 'free' && <Section id="observability" title="Observability (Phase 4)">
             <SubSection id="otlp-traces" title="OTLP Tracing">
               <p className={styles.prose}>
                 The Graphon agent runs a full <IC>OTLP/HTTP</IC> receiver on port <IC>4318</IC> on every
@@ -585,7 +601,7 @@ export default function Docs() {
                 every 5 minutes and surfaced as a graph overlay.
               </Callout>
             </SubSection>
-          </Section>
+          </Section>}
 
           {/* ── API Reference ──────────────────────────────────────── */}
           <Section id="api-reference" title="API Reference">
@@ -638,44 +654,44 @@ export default function Docs() {
               <EndpointTable endpoints={SEARCH_ENDPOINTS} />
             </SubSection>
 
-            <SubSection id="telemetry-api" title="Telemetry">
+            {activeTier !== 'free' && <SubSection id="telemetry-api" title="Telemetry">
               <p className={styles.prose}>
                 All telemetry endpoints require ClickHouse to be configured. They respond with HTTP 501
                 when ClickHouse is not available. The <IC>connections</IC> endpoint returns both{' '}
                 <IC>bytes_sent</IC> (egress, billed) and <IC>bytes_recv</IC> (ingress, informational).
               </p>
               <EndpointTable endpoints={TELEMETRY_ENDPOINTS} />
-            </SubSection>
+            </SubSection>}
 
-            <SubSection id="cost-api" title="Cost & Config">
+            {activeTier !== 'free' && <SubSection id="cost-api" title="Cost & Config">
               <p className={styles.prose}>
                 Cost and config endpoints require a Pro license. Config endpoints are also available via
                 the UI (Settings → Cost Config). Changes via API or UI are stored in PostgreSQL and applied
                 immediately.
               </p>
               <EndpointTable endpoints={COST_API_ENDPOINTS} />
-            </SubSection>
+            </SubSection>}
 
-            <SubSection id="scan-api" title="Scan & Config">
+            {activeTier !== 'free' && <SubSection id="scan-api" title="Scan & Config">
               <p className={styles.prose}>
                 Scan config and findings endpoints require a Pro license. All 13 check names are returned
                 by <IC>GET /api/v1/scan/config/checks</IC> along with their severity, title, and description
                 — the UI uses this to render the toggle list.
               </p>
               <EndpointTable endpoints={SCAN_API_ENDPOINTS} />
-            </SubSection>
+            </SubSection>}
 
-            <SubSection id="slo-api" title="SLO">
+            {activeTier !== 'free' && <SubSection id="slo-api" title="SLO">
               <p className={styles.prose}>
                 Create and manage SLO definitions. Burn rate is the ratio of error budget consumed per hour.
                 A burn rate &gt; 1.0 means you will exhaust the error budget before the end of the window.
               </p>
               <EndpointTable endpoints={SLO_API_ENDPOINTS} />
-            </SubSection>
+            </SubSection>}
           </Section>
 
           {/* ── Webhooks ───────────────────────────────────────────── */}
-          <Section id="webhooks" title="Webhooks">
+          {activeTier !== 'free' && <Section id="webhooks" title="Webhooks">
             <p className={styles.prose}>
               Graphon listens for pull request and merge request events at{' '}
               <IC>POST /api/v1/webhooks</IC>. When a PR is opened, the backend runs an impact analysis
@@ -699,10 +715,10 @@ export default function Docs() {
                 it at the default (<IC>https://gitlab.com</IC>) for GitLab.com.
               </Callout>
             </SubSection>
-          </Section>
+          </Section>}
 
           {/* ── OIDC & RBAC ────────────────────────────────────────── */}
-          <Section id="oidc-rbac" title="OIDC & RBAC">
+          {activeTier !== 'free' && <Section id="oidc-rbac" title="OIDC & RBAC">
             <SubSection id="oidc-setup" title="SSO / OIDC Setup">
               <p className={styles.prose}>
                 Graphon supports any OIDC-compliant provider (Google Workspace, Okta, Azure AD,
@@ -751,7 +767,7 @@ export default function Docs() {
                 compatibility.
               </Callout>
             </SubSection>
-          </Section>
+          </Section>}
 
           {/* ── License ───────────────────────────────────────────── */}
           <Section id="license" title="License System">
@@ -767,7 +783,7 @@ export default function Docs() {
                     <tr>
                       <th className={styles.th}>Feature</th>
                       <th className={styles.th} style={{ textAlign: 'center' }}>Free</th>
-                      <th className={styles.th} style={{ textAlign: 'center' }}>Pro</th>
+                      {activeTier !== 'free' && <th className={styles.th} style={{ textAlign: 'center' }}>Pro</th>}
                     </tr>
                   </thead>
                   <tbody>
@@ -777,9 +793,9 @@ export default function Docs() {
                         <td className={styles.td} style={{ textAlign: 'center' }}>
                           <FeatureCell value={row.free} />
                         </td>
-                        <td className={styles.td} style={{ textAlign: 'center' }}>
+                        {activeTier !== 'free' && <td className={styles.td} style={{ textAlign: 'center' }}>
                           <FeatureCell value={row.pro} />
-                        </td>
+                        </td>}
                       </tr>
                     ))}
                   </tbody>
@@ -787,7 +803,7 @@ export default function Docs() {
               </div>
             </SubSection>
 
-            <SubSection id="apply-key" title="Applying a License Key">
+            {activeTier !== 'free' && <SubSection id="apply-key" title="Applying a License Key">
               <p className={styles.prose}>
                 Pro license keys are RS256-signed JWTs generated using keygen.sh, scoped to your
                 organisation name and cluster count. They are verified locally against an embedded RSA
@@ -798,9 +814,9 @@ export default function Docs() {
                 After a license expires, Graphon enters a 14-day grace period (configurable via{' '}
                 <IC>LICENSE_GRACE_PERIOD_DAYS</IC>) before falling back to the Free tier.
               </Callout>
-            </SubSection>
+            </SubSection>}
 
-            <SubSection id="pro-license" title="Getting a Pro Key">
+            {activeTier !== 'free' && <SubSection id="pro-license" title="Getting a Pro Key">
               <p className={styles.prose}>
                 Pro license keys are issued manually until billing integration is available. The process
                 takes under 24 hours:
@@ -817,7 +833,7 @@ export default function Docs() {
                 {' · '}
                 <a href="https://linkedin.com/in/retr0-kernel" className={styles.link} target="_blank" rel="noopener noreferrer">LinkedIn</a>
               </Callout>
-            </SubSection>
+            </SubSection>}
           </Section>
 
           {/* ── Helm Chart ─────────────────────────────────────────── */}

@@ -109,9 +109,12 @@
 }
 
 .enterpriseCard {
-  filter: blur(2.4px) saturate(0.85);
   pointer-events: none;
   user-select: none;
+}
+
+.enterpriseCard > :not(.enterpriseOverlay) {
+  filter: blur(2.4px) saturate(0.85);
 }
 
 .enterpriseOverlay {
@@ -170,21 +173,39 @@
 
 /* ── Comparison Panel (3 columns) ───────────────────────────────── */
 .comparison {
-  @apply rounded-xl p-8 grid grid-cols-1 md:grid-cols-3 gap-8;
+  @apply rounded-xl p-4 md:p-5 grid grid-cols-1 md:grid-cols-3 gap-4;
 }
 
 .tierColumn {
-  @apply space-y-4;
+  @apply relative rounded-lg p-5 space-y-5 border overflow-hidden;
+  background: rgb(var(--c-surface) / 0.42);
+  border-color: rgb(var(--c-outline-v) / 0.42);
+  box-shadow: inset 0 1px 0 rgb(var(--c-on-surface) / 0.04);
+}
+
+.tierColumn::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: rgb(var(--c-tertiary));
+}
+
+.tierColumn:nth-child(2)::before {
+  background: rgb(var(--c-primary));
 }
 
 .tierColumnEnterprise {
-  @apply relative rounded-lg p-4 -m-4;
-  background: rgb(var(--c-secondary) / 0.05);
-  border: 1px dashed rgb(var(--c-secondary) / 0.4);
+  background: rgb(var(--c-secondary) / 0.06);
+  border-color: rgb(var(--c-secondary) / 0.28);
+}
+
+.tierColumnEnterprise::before {
+  background: rgb(var(--c-secondary));
 }
 
 .tierTitle {
-  @apply font-display font-semibold text-headline-md mb-4 cursor-default;
+  @apply font-display font-semibold text-headline-md cursor-default flex flex-wrap items-center gap-2;
   letter-spacing: -0.03em;
   line-height: 1.15;
 }
@@ -202,11 +223,11 @@
 }
 
 .tierList {
-  @apply space-y-2;
+  @apply space-y-2.5;
 }
 
 .tierItem {
-  @apply flex items-center gap-2 text-body-sm text-on-surface-variant cursor-default;
+  @apply flex items-start gap-2.5 text-body-sm text-on-surface-variant cursor-default;
   line-height: 1.62;
 }
 
@@ -220,6 +241,13 @@
 
 .tierCheckEnterprise {
   @apply text-[16px] text-secondary;
+}
+
+.tierCheckFree,
+.tierCheckPro,
+.tierCheckEnterprise {
+  @apply mt-1 shrink-0;
+  font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 20;
 }
 
 /* ── Visual Polish ─────────────────────────────────────────────────── */
