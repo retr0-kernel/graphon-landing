@@ -71,8 +71,8 @@ export default defineConfig(({ mode }) => ({
       }),
     }),
   ],
-  // HashRouter handles routing without a server — works on GitHub Pages, Netlify, any static host
-  base: './',
+  // BrowserRouter routes and generated per-route HTML must resolve assets from the domain root.
+  base: '/',
   build: {
     rollupOptions: {
       output: {

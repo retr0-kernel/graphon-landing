@@ -4,6 +4,7 @@ import Nav from './components/navbar';
 import Footer from './components/footer';
 import ShaderCanvas from './components/shader-canvas';
 import ErrorBoundary from './components/error-boundary';
+import Seo from './components/seo';
 import Home from './pages/home';
 
 // Route-level code splitting: each page is fetched only when first visited,
@@ -47,6 +48,7 @@ export default function App() {
         <ShaderCanvas className="fixed inset-0 z-0 w-full h-full bg-background pointer-events-none" />
       )}
       <ScrollToTop />
+      <Seo />
       <div className="relative z-10 min-h-screen flex flex-col">
         <Nav />
         <main className="flex-1">
