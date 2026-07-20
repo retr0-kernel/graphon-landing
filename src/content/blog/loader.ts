@@ -268,22 +268,49 @@ export function parseMarkdown(src: string): BlogBlock[] {
     }
 
     // Unordered list.
+    // Blank lines between items (common when items are long paragraphs) are
+    // absorbed as long as the next non-blank line is also a list item.
     if (/^-\s+/.test(line)) {
       const items: string[] = [];
-      while (i < lines.length && /^-\s+/.test(lines[i])) {
-        items.push(lines[i].replace(/^-\s+/, ''));
-        i += 1;
+      while (i < lines.length) {
+        if (/^-\s+/.test(lines[i])) {
+          items.push(lines[i].replace(/^-\s+/, ''));
+          i += 1;
+        } else if (lines[i].trim() === '') {
+          let j = i + 1;
+          while (j < lines.length && lines[j].trim() === '') j++;
+          if (j < lines.length && /^-\s+/.test(lines[j])) {
+            i = j;
+          } else {
+            break;
+          }
+        } else {
+          break;
+        }
       }
       blocks.push({ kind: 'list', ordered: false, items });
       continue;
     }
 
     // Ordered list.
+    // Same blank-line tolerance as the unordered case above.
     if (/^\d+\.\s+/.test(line)) {
       const items: string[] = [];
-      while (i < lines.length && /^\d+\.\s+/.test(lines[i])) {
-        items.push(lines[i].replace(/^\d+\.\s+/, ''));
-        i += 1;
+      while (i < lines.length) {
+        if (/^\d+\.\s+/.test(lines[i])) {
+          items.push(lines[i].replace(/^\d+\.\s+/, ''));
+          i += 1;
+        } else if (lines[i].trim() === '') {
+          let j = i + 1;
+          while (j < lines.length && lines[j].trim() === '') j++;
+          if (j < lines.length && /^\d+\.\s+/.test(lines[j])) {
+            i = j;
+          } else {
+            break;
+          }
+        } else {
+          break;
+        }
       }
       blocks.push({ kind: 'list', ordered: true, items });
       continue;

@@ -7,6 +7,7 @@
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 18px 40px -28px rgba(0, 0, 0, 0.55);
   position: relative;
   overflow: hidden;
+  cursor: zoom-in;
 }
 
 .figure::before {
@@ -17,6 +18,11 @@
   pointer-events: none;
 }
 
+.figure:hover .expandBtn {
+  opacity: 1;
+}
+
+/* ── Inline diagram ─────────────────────────────────────────────────────── */
 .diagram {
   display: flex;
   justify-content: center;
@@ -45,7 +51,113 @@
   font-weight: 500 !important;
 }
 
-.errorBox {
+/* ── Expand button (top-right corner, fades in on hover) ─────────────────── */
+.expandBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(122, 162, 247, 0.25);
+  border-radius: 7px;
+  background: rgba(28, 31, 38, 0.72);
+  backdrop-filter: blur(6px);
+  color: rgba(180, 200, 255, 0.7);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 150ms, color 150ms, background 150ms;
+}
+
+.expandBtn:hover {
+  background: rgba(28, 31, 38, 0.95);
+  color: rgba(200, 220, 255, 1);
+}
+
+/* ── Modal backdrop ──────────────────────────────────────────────────────── */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(8, 9, 12, 0.82);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  animation: fadeIn 180ms ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Modal container ─────────────────────────────────────────────────────── */
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  max-height: 90vh;
+  padding: 2rem;
+  border: 1px solid rgba(122, 162, 247, 0.18);
+  border-radius: 20px;
+  background: linear-gradient(160deg, rgba(28, 31, 38, 0.97) 0%, rgba(20, 22, 28, 0.99) 100%);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.7);
+  overflow: auto;
+  animation: slideUp 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(18px); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+
+/* ── Diagram inside modal ────────────────────────────────────────────────── */
+.modalDiagram {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+}
+
+.modalDiagram svg {
+  width: 100%;
+  max-width: 100%;
+  height: auto !important;
+  display: block;
+  margin: 0 auto;
+  font-family: inherit;
+}
+
+/* ── Close button ────────────────────────────────────────────────────────── */
+.closeBtn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(122, 162, 247, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(180, 200, 255, 0.6);
+  cursor: pointer;
+  transition: color 150ms, background 150ms;
+}
+
+.closeBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(220, 230, 255, 1);
+}
+
+/* ── Error states ────────────────────────────────────────────────────────── */
+.errorWrap {
   position: relative;
   z-index: 1;
   margin-top: 16px;
@@ -55,6 +167,13 @@
   border: 1px solid rgba(220, 80, 80, 0.25);
   font-size: 13px;
   color: #ff9b9b;
+}
+
+.errorBadge {
+  display: inline-block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 12px;
 }
 
 .errorSource {

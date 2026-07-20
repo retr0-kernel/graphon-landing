@@ -1,4 +1,5 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import mermaid from 'mermaid';
 import styles from './Mermaid.module.css';
 
@@ -89,47 +90,44 @@ export function Mermaid({ source }: MermaidProps) {
   // Mermaid ids must be alphanumeric + underscore only (colons break mermaid.render).
   const stableId = rawId.replace(/[^a-zA-Z0-9_]/g, '_');
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const modalRef = useRef<HTMLDivElement | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+
+  const renderInto = useCallback(async (target: HTMLDivElement, idSuffix: string) => {
+    target.innerHTML = '';
+    const uniqueId = `mmd-${stableId}-${idSuffix}`;
+    try {
+      if (!mermaidInitialized) {
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: 'base',
+          securityLevel: 'strict',
+          themeVariables: buildThemeVariables(),
+        });
+        mermaidInitialized = true;
+      }
+      const { svg } = await mermaid.render(uniqueId, source.trim());
+      target.innerHTML = svg;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setError(message);
+    }
+  }, [source, stableId]);
 
   useEffect(() => {
     let cancelled = false;
-    let renderId = 0;
 
     async function render() {
-      if (!containerRef.current) return;
-      containerRef.current.innerHTML = '';
+      if (!containerRef.current || cancelled) return;
       setError(null);
-
-      // Bump the render id so a slow render from the previous theme
-      // can never overwrite the current one.
-      const myRender = ++renderId;
-      const uniqueId = `mmd-${stableId}-${myRender}`;
-
-      try {
-        if (!mermaidInitialized) {
-          mermaid.initialize({
-            startOnLoad: false,
-            theme: 'base',
-            securityLevel: 'strict',
-            themeVariables: buildThemeVariables(),
-          });
-          mermaidInitialized = true;
-        }
-
-        const { svg } = await mermaid.render(uniqueId, source.trim());
-        if (cancelled || myRender !== renderId || !containerRef.current) return;
-        containerRef.current.innerHTML = svg;
-      } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        if (!cancelled && myRender === renderId) setError(message);
-      }
+      await renderInto(containerRef.current, 'inline');
     }
 
     render();
 
     // Re-render when the page theme changes so diagrams stay in sync.
     const observer = new MutationObserver(() => {
-      // Reset initialization so a fresh themeVariables pass takes effect.
       mermaidInitialized = false;
       render();
     });
@@ -142,7 +140,25 @@ export function Mermaid({ source }: MermaidProps) {
       cancelled = true;
       observer.disconnect();
     };
-  }, [source, stableId]);
+  }, [renderInto]);
+
+  // Render into the modal container when it opens.
+  useEffect(() => {
+    if (open && modalRef.current) {
+      mermaidInitialized = false;
+      renderInto(modalRef.current, 'modal');
+    }
+  }, [open, renderInto]);
+
+  // Close modal on Escape.
+  useEffect(() => {
+    if (!open) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setOpen(false);
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
 
   if (error) {
     return (
@@ -154,5 +170,48 @@ export function Mermaid({ source }: MermaidProps) {
     );
   }
 
-  return <div ref={containerRef} className={styles.diagram} aria-label="Diagram" />;
+  return (
+    <>
+      <div className={styles.figure}>
+        <div ref={containerRef} className={styles.diagram} aria-label="Diagram" />
+        <button
+          className={styles.expandBtn}
+          onClick={() => setOpen(true)}
+          aria-label="Expand diagram"
+          title="Click to expand"
+        >
+          <ExpandIcon />
+        </button>
+      </div>
+
+      {open && createPortal(
+        <div className={styles.backdrop} onClick={() => setOpen(false)} role="dialog" aria-modal="true" aria-label="Diagram expanded view">
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <button className={styles.closeBtn} onClick={() => setOpen(false)} aria-label="Close">
+              <CloseIcon />
+            </button>
+            <div ref={modalRef} className={styles.modalDiagram} />
+          </div>
+        </div>,
+        document.body,
+      )}
+    </>
+  );
+}
+
+function ExpandIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  );
 }

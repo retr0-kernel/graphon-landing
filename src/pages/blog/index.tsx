@@ -7,6 +7,7 @@ import { useInView } from '../../hooks/useInView';
 import { ROUTES } from '../../config/routes';
 import { AuthorBadge } from './components/AuthorBadge';
 import { Mermaid } from './components/Mermaid';
+import { CodeBlock } from './components/CodeBlock';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -82,12 +83,7 @@ function Block({ block }: { block: BlogBlock }) {
         </ul>
       );
     case 'code':
-      return (
-        <div className={styles.codeWrap}>
-          <span className={styles.codeLang}>{block.language}</span>
-          <pre className={styles.codeBlock}><code>{block.text}</code></pre>
-        </div>
-      );
+      return <CodeBlock language={block.language} text={block.text} />;
     case 'mermaid':
       return <Mermaid source={block.source} />;
     case 'table':

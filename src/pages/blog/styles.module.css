@@ -550,15 +550,17 @@
 }
 
 .list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
+  display: block;
   margin: 0.25rem 0;
   padding-left: 1.5rem;
   color: rgb(var(--c-on-sv));
   line-height: 1.75;
 }
 
+ul.list { list-style-type: disc; }
+ol.list { list-style-type: decimal; }
+.list li { margin-bottom: 0.65rem; }
+.list li:last-child { margin-bottom: 0; }
 .list li::marker { color: rgb(var(--c-primary)); }
 
 .tableWrap {
