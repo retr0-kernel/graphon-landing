@@ -274,7 +274,11 @@ export default function Docs() {
 
         <div className={styles.docsBody}>
         {/* ── Sidebar ──────────────────────────────────────────────── */}
-        <nav ref={sidebarRef} className={styles.sidebar} aria-label="Documentation navigation">
+        <nav
+          ref={sidebarRef}
+          className={`${styles.sidebar} ${activeTier === 'enterprise' ? styles.sidebarBlurred : ''}`}
+          aria-label="Documentation navigation"
+        >
           <button
             type="button"
             className={styles.sidebarToggle}
